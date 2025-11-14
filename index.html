@@ -49,6 +49,7 @@
             background-color: var(--bg);
             color: var(--text-primary);
             min-height: 100vh;
+            /* ИСПРАВЛЕНИЕ: Отключаем зум на айфоне */
             touch-action: manipulation;
         }
 
@@ -176,8 +177,8 @@
             font-weight: 700;
         }
         .menu-btn.primary:hover {
-            background-color: var(--accent-hover);
-            border-color: var(--accent-hover);
+            background-color: var(--accent);
+            border-color: var(--accent);
         }
         .menu-btn i {
             width: 20px;
@@ -216,10 +217,7 @@
             color: var(--text-primary);
             border-color: var(--text-primary);
         }
-        .tg-icon {
-            color: var(--tg-color);
-            font-size: 1.1rem;
-        }
+        .tg-icon { color: var(--tg-color); font-size: 1.1rem; }
         .theme-toggle:hover .tg-icon { color: var(--tg-color); }
         
         .progress-pill {
@@ -242,10 +240,10 @@
             border: 1px solid var(--border);
             margin-top: 20px;
         }
-        .q-id {
-            font-size: 0.9rem;
+        .q-id { /* ИЗМЕНЕНО: Стиль для названия раздела */
+            font-size: 1rem;
             font-weight: 700;
-            color: var(--text-secondary);
+            color: var(--accent);
             margin-bottom: 8px;
         }
         .q-title {
@@ -258,184 +256,69 @@
         
         .options-list { display: flex; flex-direction: column; gap: 12px; }
         .option {
-            background: var(--bg);
-            border: 2px solid var(--bg);
-            padding: 16px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 500;
-            line-height: 1.4;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            touch-action: manipulation;
+            background: var(--bg); border: 2px solid var(--bg); padding: 16px; border-radius: 12px; cursor: pointer;
+            font-size: 1rem; font-weight: 500; line-height: 1.4; transition: all 0.2s; display: flex; align-items: center;
+            gap: 15px; touch-action: manipulation;
         }
         .option:hover:not(.disabled) { border-color: var(--accent); }
         
         .option-marker {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            border: 2px solid var(--border);
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.2s;
-            position: relative;
+            width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--border);
+            flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: 0.2s; position: relative;
         }
-        .option-marker i {
-            font-size: 12px;
-            color: white;
-            opacity: 0;
-            transition: 0.2s;
-        }
+        .option-marker i { font-size: 12px; color: white; opacity: 0; transition: 0.2s; }
 
-        .option.selected:not(.disabled) {
-            border-color: var(--accent);
-            background: var(--accent-light);
-        }
-        .option.selected:not(.disabled) .option-marker {
-            background: var(--accent);
-            border-color: var(--accent);
-        }
-        .option.selected:not(.disabled) .option-marker i {
-            opacity: 1;
-            content: '\f00c'; 
-            font-family: "Font Awesome 6 Free";
-            font-weight: 900;
-        }
+        .option.selected:not(.disabled) { border-color: var(--accent); background: var(--accent-light); }
+        .option.selected:not(.disabled) .option-marker { background: var(--accent); border-color: var(--accent); }
+        .option.selected:not(.disabled) .option-marker i { opacity: 1; content: '\f00c'; font-family: "Font Awesome 6 Free"; font-weight: 900; }
 
-        .option.correct {
-            background: var(--success-light);
-            border-color: var(--success);
-            color: var(--text-primary);
-        }
-        .option.correct .option-marker {
-            background: var(--success);
-            border-color: var(--success);
-        }
-        .option.correct .option-marker i {
-            opacity: 1;
-            content: '\f00c';
-            font-family: "Font Awesome 6 Free";
-            font-weight: 900;
-        }
+        .option.correct { background: var(--success-light); border-color: var(--success); color: var(--text-primary); }
+        .option.correct .option-marker { background: var(--success); border-color: var(--success); }
+        .option.correct .option-marker i { opacity: 1; content: '\f00c'; font-family: "Font Awesome 6 Free"; font-weight: 900; }
         
-        .option.incorrect {
-            background: var(--error-light);
-            border-color: var(--error);
-            color: var(--text-primary);
-        }
-        .option.incorrect .option-marker {
-            background: var(--error);
-            border-color: var(--error);
-        }
-        .option.incorrect .option-marker i {
-            opacity: 1;
-            content: '\f00d';
-            font-family: "Font Awesome 6 Free";
-            font-weight: 900;
-        }
+        .option.incorrect { background: var(--error-light); border-color: var(--error); color: var(--text-primary); }
+        .option.incorrect .option-marker { background: var(--error); border-color: var(--error); }
+        .option.incorrect .option-marker i { opacity: 1; content: '\f00d'; font-family: "Font Awesome 6 Free"; font-weight: 900; }
 
-        .option.missed {
-            border: 2px dashed var(--success);
-            background: var(--success-light);
-            opacity: 0.8;
-        }
+        .option.missed { border: 2px dashed var(--success); background: var(--success-light); opacity: 0.8; }
         .option.disabled { cursor: default; }
 
         /* --- ФУТЕР --- */
         .quiz-footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 20px;
+            position: fixed; bottom: 0; left: 0; right: 0; padding: 20px;
             background: linear-gradient(180deg, rgba(255,255,255,0) 0%, var(--card-bg) 30%);
             border-top: 1px solid var(--border);
         }
-        [data-theme="dark"] .quiz-footer {
-            background: linear-gradient(180deg, rgba(0,0,0,0) 0%, var(--card-bg) 30%);
-        }
+        [data-theme="dark"] .quiz-footer { background: linear-gradient(180deg, rgba(0,0,0,0) 0%, var(--card-bg) 30%); }
 
         .quiz-footer .container { padding: 0; }
-        .controls {
-            display: grid;
-            grid-template-columns: 60px 1fr 60px;
-            gap: 15px;
-        }
+        /* ИЗМЕНЕНО: Добавлен 4-й столбец для кнопки "Домой" */
+        .controls { display: grid; grid-template-columns: 50px 1fr 50px 50px; gap: 10px; }
         .nav-btn {
-            height: 50px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            cursor: pointer;
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--card-bg);
-            color: var(--text-primary);
-            box-shadow: var(--shadow);
-            touch-action: manipulation;
+            height: 50px; border-radius: 12px; border: 1px solid var(--border); cursor: pointer; font-size: 1.2rem;
+            display: flex; align-items: center; justify-content: center; background: var(--card-bg); color: var(--text-primary);
+            box-shadow: var(--shadow); touch-action: manipulation;
         }
-        .nav-btn:hover:not(:disabled) {
-            background: var(--bg);
-            border-color: var(--accent);
-        }
-        .nav-btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
+        .nav-btn:hover:not(:disabled) { background: var(--bg); border-color: var(--accent); }
+        .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; box-shadow: none; }
         
         .action-btn {
-            height: 50px;
-            border-radius: 12px;
-            border: none;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 1rem;
-            color: white;
-            background: var(--accent);
-            box-shadow: var(--shadow);
-            touch-action: manipulation;
+            height: 50px; border-radius: 12px; border: none; cursor: pointer; font-weight: 700; font-size: 1rem; color: white;
+            background: var(--accent); box-shadow: var(--shadow); touch-action: manipulation;
         }
-        .action-btn:disabled {
-            background: var(--text-secondary);
-            box-shadow: none;
-            opacity: 0.5;
-        }
+        .action-btn:disabled { background: var(--text-secondary); box-shadow: none; opacity: 0.5; }
         .action-btn.correct { background: var(--success); }
         .action-btn.incorrect { background: var(--error); }
         .action-btn:active:not(:disabled) { transform: scale(0.98); }
 
         /* --- РЕЗУЛЬТАТЫ --- */
-        .stat-box {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            padding: 15px;
-            border-radius: 12px;
-            text-align: center;
-            box-shadow: var(--shadow);
-        }
-        .stat-val {
-            font-size: 1.8rem;
-            font-weight: 700;
-        }
-        .stat-label {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
+        .stat-box { background: var(--card-bg); border: 1px solid var(--border); padding: 15px; border-radius: 12px; text-align: center; box-shadow: var(--shadow); }
+        .stat-val { font-size: 1.8rem; font-weight: 700; }
+        .stat-label { font-size: 0.9rem; color: var(--text-secondary); }
         .stat-val.correct { color: var(--success); }
         .stat-val.error { color: var(--error); }
         
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -444,7 +327,8 @@
 
         <div id="start-screen" class="screen active">
             <div class="top-settings">
-                <span></span> <div class="top-controls-group">
+                <span></span>
+                <div class="top-controls-group">
                     <a href="https://t.me/stewonly" target="_blank" class="theme-toggle" aria-label="Telegram">
                         <i class="fab fa-telegram-plane tg-icon"></i>
                     </a>
@@ -497,7 +381,7 @@
             </div>
 
             <div class="quiz-card" id="question-card">
-                <div class="q-id" id="q-id-display">#...</div>
+                <div class="q-id" id="q-id-display">Раздел: ...</div>
                 <div class="q-title" id="q-text">Загрузка...</div>
                 <div class="options-list" id="options-list"></div>
             </div>
@@ -522,7 +406,7 @@
                  <button class="menu-btn primary" id="mistakes-btn-end" onclick="startQuiz('mistakes')" style="display:none">
                     <i class="fas fa-bug"></i> &nbsp; Работа над ошибками
                 </button>
-                <button class="menu-btn" onclick="location.reload()">
+                <button class="menu-btn" onclick="goHome()">
                     <i class="fas fa-home"></i> &nbsp; В главное меню
                 </button>
             </div>
@@ -535,17 +419,17 @@
                 <button class="nav-btn" id="prev-btn" onclick="prevQ()"><i class="fas fa-chevron-left"></i></button>
                 <button class="action-btn" id="main-btn" onclick="handleMainClick()">Ответить</button>
                 <button class="nav-btn" id="next-btn" onclick="nextQ()"><i class="fas fa-chevron-right"></i></button>
+                <button class="nav-btn" id="home-btn" onclick="goHome()"><i class="fas fa-home"></i></button>
             </div>
         </div>
     </div>
     
     <script>
         // --- БАЗА ДАННЫХ ВОПРОСОВ (ПОЛНАЯ) ---
-        // (Разбита по разделам для фильтрации)
-
+        
         const topicData = {
             s3: {
-                name: "Строение углеводов",
+                name: "Раздел 3. Строение углеводов",
                 questions: [
                     {id:"3.1",q:"Укажите основной дисахарид молока млекопитающих.",opts:["Сахароза.","Лактоза.","Мальтоза.","Изомальтоза."],correct:[1]},
                     {id:"3.2",q:"Выберите дисахарид, получаемый из тростника.",opts:["Сахароза.","Лактоза.","Мальтоза.","Изомальтоза."],correct:[0]},
@@ -614,7 +498,7 @@
                 ]
             },
             s9: {
-                name: "Регуляция обмена углеводов",
+                name: "Раздел 9. Регуляция обмена углеводов",
                 questions: [
                     {id:"9.1",q:"Какой рибонуклеотид оказывает ингибирующее действие на общие пути катаболизма (гликолиз, ...)?",opts:["АМФ.","АТФ.","УМФ.","ЦТФ."],correct:[1]},
                     {id:"9.2",q:"Выберите верное утверждение.",opts:["Глюкокиназа активируется инсулином.","Глюкокиназа ингибируется инсулином.","Глюкокиназа активируется глюкагоном.","Глюкокиназа ингибируется цитратом."],correct:[0]},
@@ -678,7 +562,7 @@
                 ]
             },
             s10: {
-                name: "Гликолиз",
+                name: "Раздел 10. Гликолиз",
                 questions: [
                     {id:"10.1",q:"Какой фермент катализирует превращение глюкозо-6-фосфата во фруктозо-6-фосфат?",opts:["Гексокиназа.","Глюкозо-6-фосфатизомераза.","Фосфофруктокиназа-1.","Альдолаза."],correct:[1]},
                     {id:"10.2",q:"Какой фермент катализирует превращение глюкозы в глюкозо-6-фосфат?",opts:["Гексокиназа.","Глюкозо-6-фосфатизомераза.","Фосфофруктокиназа-1.","Альдолаза."],correct:[0]},
@@ -693,7 +577,7 @@
                     {id:"10.11",q:"Какой фермент катализирует превращение 2-фосфоглицерата в фосфоенолпируват?",opts:["Енолаза.","Пируваткиназа.","Лактатдегидрогеназа.","Фосфоглицеромутаза."],correct:[0]},
                     {id:"10.12",q:"Какой фермент катализирует превращение 3-фосфоглицерата в 2-фосфоглицерат?",opts:["Триозофосфатизомераза.","Глицеральдегидфосфатдегидрогеназа.","Фосфоглицераткиназа.","Фосфоглицеромутаза."],correct:[3]},
                     {id:"10.13",q:"Укажите фермент, лимитирующий скорость гликолиза.",opts:["Енолаза.","Фосфофруктокиназа-1.","Фосфоглицераткиназа.","Триозофосфатизомераза."],correct:[1]},
-                    {id:"10.14",q:"Укажите фермент необратимой реакции гликолиза.",opts:["Триозофосфатизомераза.","Альдолаза.","Фосфофруктокиназа-1.","Лактатдегидрогеназа."],correct:[2]},
+                    {id:"10.14",q:"Укажите фермент необратимой реакции гликолиза.",opts:["Триозофосфатизомераза.","Альдолазная.","Фосфофруктокиназа-1.","Лактатдегидрогеназа."],correct:[2]},
                     {id:"10.15",q:"Укажите фермент, присутствующий только в печени и поджелудочной железе.",opts:["Фосфорилаза.","Гексокиназа.","Пируваткарбоксилаза.","Глюкокиназа."],correct:[3]},
                     {id:"10.16",q:"Выберите верное утверждение.",opts:["Гексокиназа относится к классу трансфераз.","Гексокиназа катализирует реакцию превращения глюкозо-6-фосфата в глюкозу.","Гексокиназа НАД-зависимый фермент.","Гексокиназа специфична для клеток печени."],correct:[0]},
                     {id:"10.17",q:"Какая реакция сопровождается образованием НАДН(Н+)?",opts:["Превращения глицеральдегид-3-фосфата в 1,3-бисфосфоглицерат.","Превращения пирувата в оксалоацетат.","Превращения оксалоацетата в фосфоенолпируват.","Превращения глюкозо-6-фосфата в фосфоглюконолактон."],correct:[0]},
@@ -758,7 +642,7 @@
                 ]
             },
             s11: {
-                name: "ЦТК и Окисл. декарбокс. пирувата",
+                name: "Раздел 11. ЦТК и Окисл. декарбокс. пирувата",
                 questions: [
                     {id:"11.1",q:"Выберите верное утверждение.",opts:["Окислительное декарбоксилирование пирувата происходит в цитоплазме.","Окислительное декарбоксилирование пирувата происходит в митохондрии.","Окислительное декарбоксилирование пирувата происходит частично в цитоплазме, частично в митохондрии.","Окислительное декарбоксилирование пирувата происходит в межклеточном пространстве."],correct:[1]},
                     {id:"11.2",q:"Какой фермент катализирует превращение пирувата в ацетил-SКоA?",opts:["Пируваткиназа.","Пируватдегидрогеназный комплекс.","Пируваткарбоксилаза.","Цитратсинтаза."],correct:[1]},
@@ -770,7 +654,7 @@
                     {id:"11.8",q:"Выберите витамин-предшественник кофермента пируватдегидрогеназного комплекса.",opts:["Никотиновая кислота.","Аскорбиновая кислота.","Фолиевая кислота.","Менахинон."],correct:[0]},
                     {id:"11.9",q:"Выберите витамин-предшественник кофермента пируватдегидрогеназного комплекса.",opts:["Рибофлавин.","Пиридоксин.","Кобаламин.","Фолиевая кислота."],correct:[0]},
                     {id:"11.10",q:"Выберите кофермент пируватдегидрогеназного комплекса.",opts:["Липоевая кислота.","Аскорбиновая кислота.","Холекальциферол.","Фолиевая кислота."],correct:[0]},
-                    {id:"11.11",q:"Выберите витамин-предшественник кофермента пируватдегидрогеназного комплекса.",opts:["Пантотеновая кислота.","Аскорбиновая кислота.","Холекальциферол.","Фолиевая кислота."],correct:[0]},
+                    {id:"11.11",q:"Выберите витамин-предшественник кофермента пируватдегидрогеназного комплекса.",opts:["Пантотеновая кислота.","Аскорбиновая кислота.","Холекальциферола.","Фолиевая кислота."],correct:[0]},
                     {id:"11.12",q:"Выберите верное утверждение.",opts:["Пируватдегидрогеназный комплекс активируется НАДН(Н+).","Пируватдегидрогеназный комплекс ингибируется НАДН(H+).","Пируватдегидрогеназный комплекс активируется АТФ.","Пируватдегидрогеназный комплекс ингибируется НАД+."],correct:[1]},
                     {id:"11.13",q:"При недостатке какого витамина в крови увеличивается количество пировиноградной кислоты?",opts:["Ретинола.","Аскорбиновой кислоты.","Холекальциферола.","Тиамина."],correct:[3]},
                     {id:"11.14",q:"Выберите верное утверждение.",opts:["Пируваткарбоксилаза активируется ацетил-SКоА.","Пируваткарбоксилаза ингибируется ацетил-SКоА.","Пируваткарбоксилаза активируется АДФ.","Пируваткарбоксилаза ингибируется цитратом."],correct:[0]},
@@ -856,7 +740,7 @@
                 ]
             },
             s12: {
-                name: "Цепь переноса электронов",
+                name: "Раздел 12. Цепь переноса электронов",
                 questions: [
                     {id:"12.1",q:"Выберите I комплекс ЦПЭ.",opts:["НАДН-КоQ оксидоредуктаза.","Сукцинатдегидрогеназа.","Цитохром с.","АТФ-синтаза."],correct:[0]},
                     {id:"12.2",q:"Выберите II комплекс ЦПЭ.",opts:["НАДН-КоQ оксидоредуктаза.","Сукцинатдегидрогеназа.","Цитохром с.","АТФ-синтаза."],correct:[1]},
@@ -913,7 +797,7 @@
                 ]
             },
             s13: {
-                name: "Синтез и распад гликогена",
+                name: "Раздел 13. Синтез и распад гликогена",
                 questions: [
                     {id:"13.1",q:"Какой фермент катализирует превращение глюкозо-1-фосфата в УДФ-глюкозу?",opts:["Глюкокиназа.","Фосфоглюкомутаза.","УДФ-глюкопирофосфорилаза.","Гликозилтрансфераза."],correct:[2]},
                     {id:"13.2",q:"Какой фермент катализирует реакции наращивания гликозидной цепи гликогена?",opts:["Глюкокиназа.","Фосфоглюкомутаза.","Гликогенсинтаза.","Гликозилтрансфераза."],correct:[2]},
@@ -944,7 +828,7 @@
                     {id:"13.27",q:"Укажите локализацию процесса распада гликогена.",opts:["В цитоплазме клетки.","В митохондрии.","Частично в цитоплазме, частично в митохондрии.","В межклеточном пространстве."],correct:[0]},
                     {id:"13.28",q:"Укажите локализацию процесса синтеза гликогена.",opts:["В цитоплазме клетки.","В митохондрии.","Частично в цитоплазме, частично в митохондрии.","В межклеточном пространстве."],correct:[0]},
                     {id:"13.29",q:"Каков энергетический эффект окисления до CO2 и воды... одного гликозильного остатка гликогена?",opts:["2 молекулы АТФ.","20 молекул АТФ.","32 молекул АТФ.","33 молекул АТФ."],correct:[3]},
-                    {id:"13.30",q:"Какие связи образуются при полимеризации... под действием гликогенсинтазы?",opts:["а-(1,4) и а-(1,6) связи...","b-(1,6) связи...","а-(1,4) и а-(1,2) связи...","а-(1,4) связи гликозидной цепи."],correct:[3]},
+                    {id:"13.30",q:"Какие связи образуются при полимеризации... под действием гликогенсинтазы?",opts:["а-(1,4) и а-(1,6) связи...","b-(1,6) связи...","а-(1,4) и а-(1,2) связи...","а-(1-4) связи гликозидной цепи."],correct:[3]},
                     {id:"13.31",q:"Какое минимальное число остатков глюкозы... необходимо для наращивания цепи гликогена?",opts:["2 остатка.","3 остатка.","4 остатка.","5 остатков."],correct:[2]},
                     {id:"13.32",q:"Сколько субъединиц содержит фосфорилаза а?",opts:["1 субъединицу.","2 субъединицы.","3 субъединицы.","4 субъединицы."],correct:[1]},
                     {id:"13.33",q:"Сколько молекул АТФ затрачивается на превращение неактивной фосфорилазы b в активную фосфорилазу а?",opts:["1 молекула.","2 молекулы.","3 молекулы.","4 молекулы."],correct:[1]},
@@ -979,7 +863,7 @@
                 ]
             },
             s14: {
-                name: "Глюконеогенез и цикл Кори",
+                name: "Раздел 14. Глюконеогенез и цикл Кори",
                 questions: [
                     {id:"14.1",q:"Что такое глюконеогенез?",opts:["Синтез гликогена из глюкозы.","Распад гликогена до глюкозы.","Превращение глюкозы в лактат.","Синтез глюкозы из неуглеводных предшественников."],correct:[3]},
                     {id:"14.2",q:"Как называется процесс, при котором происходит синтез глюкозы из неуглеводных компонентов?",opts:["Аэробным гликолизом.","Глюконеогенезом.","Гликогенолизом.","Анаэробным гликолизом."],correct:[1]},
@@ -1025,7 +909,10 @@
                     {id:"14.42",q:"Усиление какого процесса в мышечной ткани активирует цикл Кори?",opts:["Синтеза гликогена.","Окислительного декарбоксилирования пирувата.","Анаэробного гликолиза.","Глюконеогенеза."],correct:[2]},
                     {id:"14.43",q:"Каков энергетический эффект цикла Кори?",opts:["В печени... 6 молекул АТФ, в мышце... 2 молекулы АТФ.","В печени... 6 молекул АТФ, в мышце... 30 молекул АТФ.","В печени... 10 молекул АТФ, в мышце... 6 молекул АТФ.","В печени... 10 молекул АТФ, в мышце... 8 молекул АТФ."],correct:[0]},
                     {id:"14.44",q:"Выберите верное утверждение.",opts:["Реакции цикла Кори позволяют убирать из мышечной ткани излишки глюкозы...","Реакции цикла Кори позволяют убирать из мышечной ткани излишки лактата...","Реакции цикла Кори позволяют убирать из печени излишки лактата...","Реакции цикла Кори позволяют убирать из печени излишки аланина..."],correct:[1]},
-                    {id:"14.45",q:"Из какого соединения может образовываться глюкоза в мышечной ткани?",opts:["Из глицерола.","Из лактата.","Из лейцина.","Не может образовываться."],correct:[3]}
+                    // ИСПРАВЛЕНИЕ: Вопрос 14.45 (Г)
+                    {id:"14.45",q:"Из какого соединения может образовываться глюкоза в мышечной ткани?",opts:["Из глицерола.","Из лактата.","Из лейцина.","Не может образовываться."],correct:[3]},
+                    // ИСПРАВЛЕНИЕ: Вопрос 14.46 (Б)
+                    {id:"14.46",q:"Анаэробная тренировка предполагает более быструю утилизацию углеводов... Какие виды упражнений можно отнести к анаэробным?",opts:["Бег на дальние дистанции в среднем темпе.","Спринтерский бег на короткие дистанции.","Плавание вольным стилем на длинные дистанции.","Катание на роликовых коньках."],correct:[1]}
                 ]
             }
         };
@@ -1033,9 +920,9 @@
         // --- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ---
         let activeQuestions = [];
         let currentIndex = 0;
-        let userAnswers = {}; // { "902": { selected: Set, isSubmitted: bool, isCorrect: bool }, ... }
+        let userAnswers = {}; // { "3.1": { selected: Set, isSubmitted: bool, isCorrect: bool }, ... }
         let currentMode = 'default';
-        const storageKey = 'biochem_quiz_progress_v1';
+        const storageKey = 'biochem_quiz_progress_v3'; // Новая версия для биохимии
 
         // --- DOM ЭЛЕМЕНТЫ ---
         const screens = {
@@ -1053,7 +940,7 @@
         const prevBtn = document.getElementById('prev-btn');
         const nextBtn = document.getElementById('next-btn');
         const themeToggleBtns = document.querySelectorAll('.theme-toggle');
-        const mistakesBtn = document.getElementById('mistakes-btn-end');
+        const mistakesBtnEnd = document.getElementById('mistakes-btn-end');
         const mistakesBtnStart = document.getElementById('mistakes-btn-start');
         const progressPill = document.getElementById('progress-pill');
         const topicListEl = document.getElementById('topic-list');
@@ -1062,13 +949,15 @@
         document.addEventListener('DOMContentLoaded', () => {
             loadTheme();
             populateTopics();
-            if (localStorage.getItem(storageKey)) {
-                resumeBtn.style.display = 'block';
-                // Проверяем, есть ли ошибки в сохраненке
-                const savedData = JSON.parse(localStorage.getItem(storageKey));
-                const mistakeIDs = Object.keys(savedData.answers).filter(id => !savedData.answers[id].isCorrect);
-                if (mistakeIDs.length > 0) {
+            // ИСПРАВЛЕНИЕ: Проверяем, есть ли ошибки в сохраненке для стартовой кнопки
+            const savedData = JSON.parse(localStorage.getItem(storageKey));
+            if (savedData && savedData.answers) {
+                const hasMistakes = Object.values(savedData.answers).some(a => a && a.isSubmitted && !a.isCorrect);
+                if (hasMistakes) {
                     mistakesBtnStart.style.display = 'flex';
+                }
+                if(savedData.rawQuestions && savedData.rawQuestions.length > 0) {
+                     resumeBtn.style.display = 'block';
                 }
             }
             themeToggleBtns.forEach(btn => btn.onclick = toggleTheme);
@@ -1090,7 +979,6 @@
         
         function toggleSelectAll(button) {
             const checkboxes = document.querySelectorAll('.topic-checkbox');
-            // Проверяем, выбраны ли все. Если да, то снимаем, иначе - выбираем
             const allSelected = Array.from(checkboxes).every(cb => cb.checked);
             checkboxes.forEach(cb => cb.checked = !allSelected);
             button.textContent = allSelected ? "Выбрать все" : "Снять выделение";
@@ -1106,29 +994,27 @@
                 document.body.setAttribute('data-theme', newTheme);
             }
             localStorage.setItem('gi_theme', newTheme);
-            themeToggleBtns.forEach(btn => {
-                const icon = btn.querySelector('i');
-                if (icon.classList.contains('fa-moon') || icon.classList.contains('fa-sun')) {
-                    icon.className = 'fas ' + (newTheme === 'dark' ? 'fa-sun' : 'fa-moon');
+            document.querySelectorAll('.theme-toggle i').forEach(btn => {
+                const icon = btn.classList;
+                if (icon.contains('fa-moon') || icon.contains('fa-sun')) {
+                    icon.remove(newTheme === 'dark' ? 'fa-moon' : 'fa-sun');
+                    icon.add(newTheme === 'dark' ? 'fa-sun' : 'fa-moon');
                 }
             });
         }
 
         function loadTheme() {
-            const theme = localStorage.getItem('gi_theme') || 'light'; // PRO по умолчанию светлый
+            const theme = localStorage.getItem('gi_theme') || 'light';
             if (theme === 'dark') {
                 document.body.setAttribute('data-theme', 'dark');
-                themeToggleBtns.forEach(btn => {
-                    const icon = btn.querySelector('i');
-                    if (icon.classList.contains('fa-moon')) icon.className = 'fas fa-sun';
-                });
             } else {
                 document.body.removeAttribute('data-theme');
-                 themeToggleBtns.forEach(btn => {
-                    const icon = btn.querySelector('i');
-                    if (icon.classList.contains('fa-sun')) icon.className = 'fas fa-moon';
-                });
             }
+        }
+        
+        // ИСПРАВЛЕНИЕ: Кнопка "Домой"
+        function goHome() {
+            switchScreen('start');
         }
 
         // --- ЛОГИКА СТАРТА ТЕСТА ---
@@ -1142,26 +1028,17 @@
                     return;
                 }
             } else {
-                // Собираем выбранные темы
-                const selectedKeys = Array.from(document.querySelectorAll('.topic-checkbox:checked')).map(cb => cb.dataset.topicKey);
-                
-                if (selectedKeys.length === 0 && mode !== 'mistakes') {
-                    alert("Выберите хотя бы одну тему!");
-                    return;
-                }
-                
                 activeQuestions = [];
-                userAnswers = {};
                 currentIndex = 0;
 
                 if (mode === 'mistakes') {
                     const savedData = JSON.parse(localStorage.getItem(storageKey));
                     let allMistakeIDs = [];
                     if (savedData && savedData.answers) {
-                         // Восстанавливаем Set'ы, чтобы проверить
-                         const savedAnswers = savedData.answers;
-                         for (const id in savedAnswers) {
-                             if (savedAnswers[id] && !savedAnswers[id].isCorrect) {
+                         userAnswers = savedData.answers; // Загружаем все ответы
+                         for (const id in userAnswers) {
+                             userAnswers[id].selected = new Set(userAnswers[id].selected); // Восстанавливаем Set
+                             if (!userAnswers[id].isCorrect) {
                                  allMistakeIDs.push(id);
                              }
                          }
@@ -1171,17 +1048,33 @@
                          alert("Нет сохраненных ошибок для работы!");
                          return;
                     }
-                    // Фильтруем ошибки по *всем* темам, а не только по выбранным
-                    activeQuestions = fullQuizData.filter(q => allMistakeIDs.includes(q.id.toString()));
+                    
+                    let fullData = [];
+                    for (const key in topicData) {
+                        topicData[key].questions.forEach(q => {
+                            fullData.push({...q, topic: topicData[key].name });
+                        });
+                    }
+                    
+                    activeQuestions = fullData.filter(q => allMistakeIDs.includes(q.id.toString()));
+                    
+                    // Сбрасываем состояние *только* для ошибочных вопросов
+                    activeQuestions.forEach(q => {
+                        userAnswers[q.id] = { selected: new Set(), isSubmitted: false, isCorrect: false };
+                    });
+
                 } else { // 'new' or 'shuffle'
+                    const selectedKeys = Array.from(document.querySelectorAll('.topic-checkbox:checked')).map(cb => cb.dataset.topicKey);
+                    if (selectedKeys.length === 0) { alert("Выберите хотя бы одну тему!"); return; }
+
                     selectedKeys.forEach(key => {
-                        activeQuestions = activeQuestions.concat(JSON.parse(JSON.stringify(topicData[key].questions)));
+                        topicData[key].questions.forEach(q => {
+                            // Клонируем и добавляем свойство 'topic' для синхронизации
+                            activeQuestions.push({...JSON.parse(JSON.stringify(q)), topic: topicData[key].name });
+                        });
                     });
                     
-                    if (activeQuestions.length === 0) {
-                         alert("В выбранных темах нет вопросов.");
-                         return;
-                    }
+                    if (activeQuestions.length === 0) { alert("В выбранных темах нет вопросов."); return; }
 
                     if (mode === 'shuffle') {
                         shuffleArray(activeQuestions);
@@ -1191,6 +1084,7 @@
                             q.correct = correctOriginalTexts.map(text => q.opts.findIndex(opt => opt === text));
                         });
                     }
+                    userAnswers = {};
                     localStorage.removeItem(storageKey);
                 }
             }
@@ -1200,7 +1094,7 @@
         }
         
         // --- ЛОГИКА РЕНДЕРА ВОПРОСА ---
-        function renderQuestion(isFirstLoad = false, direction = 'right') {
+        function renderQuestion(isFirstLoad = false) {
             const q = activeQuestions[currentIndex];
             if (!q) return;
 
@@ -1210,12 +1104,13 @@
             const state = userAnswers[q.id];
 
             progressPill.textContent = `${currentIndex + 1} / ${activeQuestions.length}`;
-            qIdEl.textContent = `Вопрос ${q.id}`;
+            // ИСПРАВЛЕНИЕ: Динамический заголовок
+            qIdEl.textContent = q.topic; 
             qTextEl.textContent = q.q;
 
             cardContainer.style.animation = 'none';
             if (!isFirstLoad) {
-                void cardContainer.offsetWidth; // Force reflow
+                void cardContainer.offsetWidth; 
                 cardContainer.style.animation = `fadeIn 0.3s ease-out`;
             }
 
@@ -1223,27 +1118,16 @@
             q.opts.forEach((optText, idx) => {
                 const div = document.createElement('div');
                 div.className = 'option';
-                div.innerHTML = `<div class="option-marker"><i class="fas"></i></div><div class="option-text">${optText}</div>`;
-                const markerIcon = div.querySelector('.option-marker i');
+                div.innerHTML = `<div class="option-marker"></div><div class="option-text">${optText}</div>`;
+                const marker = div.querySelector('.option-marker');
 
                 if (state.isSubmitted) {
                     div.classList.add('disabled');
-                    if (q.correct.includes(idx)) {
-                        div.classList.add('correct');
-                        markerIcon.classList.add('fa-check');
-                    }
-                    else if (state.selected.has(idx)) {
-                        div.classList.add('incorrect');
-                        markerIcon.classList.add('fa-times');
-                    }
-                    if (q.correct.includes(idx) && !state.selected.has(idx)) {
-                        div.classList.add('missed');
-                    }
+                    if (q.correct.includes(idx)) { div.classList.add('correct'); marker.innerHTML = '<i class="fas fa-check"></i>'; }
+                    else if (state.selected.has(idx)) { div.classList.add('incorrect'); marker.innerHTML = '<i class="fas fa-times"></i>'; }
+                    if (q.correct.includes(idx) && !state.selected.has(idx)) { div.classList.add('missed'); }
                 } else {
-                    if (state.selected.has(idx)) {
-                        div.classList.add('selected');
-                        markerIcon.classList.add('fa-check');
-                    }
+                    if (state.selected.has(idx)) { div.classList.add('selected'); marker.innerHTML = '<i class="fas fa-check"></i>'; }
                     div.onclick = () => toggleOption(q.id, idx);
                 }
                 optionsList.appendChild(div);
@@ -1262,7 +1146,7 @@
             options.forEach((opt, i) => { 
                 if (i === idx) {
                     opt.classList.toggle('selected');
-                    opt.querySelector('.option-marker i').classList.toggle('fa-check', state.selected.has(idx));
+                    opt.querySelector('.option-marker').innerHTML = state.selected.has(idx) ? '<i class="fas fa-check"></i>' : '';
                 }
             });
             updateFooter(state);
@@ -1320,13 +1204,13 @@
         function nextQ() {
             if (currentIndex < activeQuestions.length - 1) {
                 currentIndex++;
-                renderQuestion(false, 'right');
+                renderQuestion(false);
             }
         }
         function prevQ() {
             if (currentIndex > 0) {
                 currentIndex--;
-                renderQuestion(false, 'left');
+                renderQuestion(false);
             }
         }
 
@@ -1350,54 +1234,49 @@
             else if (percent >= 50) title.textContent = "Неплохо!";
             else title.textContent = "Стоит повторить";
 
-            // Показываем кнопку, если есть хоть одна ошибка
+            // ИСПРАВЛЕНИЕ: Кнопка "Работа над ошибками"
             if (correctCount < total) {
-                mistakesBtn.style.display = 'flex';
+                mistakesBtnEnd.style.display = 'flex';
+                mistakesBtnStart.style.display = 'flex';
             } else {
-                mistakesBtn.style.display = 'none';
+                mistakesBtnEnd.style.display = 'none';
+                mistakesBtnStart.style.display = 'none';
             }
             switchScreen('result');
             
-            if (currentMode !== 'mistakes') {
-                // Не удаляем, а обновляем, чтобы "Работа над ошибками" видела все ошибки
-                saveProgress(); 
+            saveProgress(); 
+            
+            // ИСПРАВЛЕНИЕ: Очищаем, только если все верно
+            if (correctCount === total) {
+                localStorage.removeItem(storageKey);
+                mistakesBtnStart.style.display = 'none';
+                resumeBtn.style.display = 'none';
             }
         }
 
         function saveProgress() {
-            // Сохраняем только те, на которые ответили
             const serializableAnswers = {};
-            for (const id in userAnswers) {
-                if (userAnswers[id].isSubmitted) {
-                    serializableAnswers[id] = { ...userAnswers[id], selected: Array.from(userAnswers[id].selected) };
-                }
-            }
-            
-            // Если в режиме "возобновления", надо смержить старые и новые ответы
-            let answersToSave = serializableAnswers;
-            if (currentMode === 'resume' || currentMode === 'mistakes') {
-                 const saved = JSON.parse(localStorage.getItem(storageKey));
-                 if (saved && saved.answers) {
-                    // Восстанавливаем Set'ы из сохраненных
-                    const oldAnswers = saved.answers;
-                     for (const id in oldAnswers) {
-                         if (oldAnswers[id]) { oldAnswers[id].selected = new Set(oldAnswers[id].selected); }
-                     }
-                    answersToSave = {...oldAnswers, ...serializableAnswers};
+            let allAnswers = userAnswers;
+
+            // ИСПРАВЛЕНИЕ: Загружаем старые ответы, чтобы смержить
+            const saved = JSON.parse(localStorage.getItem(storageKey));
+            if (saved && saved.answers) {
+                const oldAnswers = saved.answers;
+                 for (const id in oldAnswers) {
+                     if (oldAnswers[id]) { oldAnswers[id].selected = new Set(oldAnswers[id].selected); }
                  }
+                allAnswers = {...oldAnswers, ...userAnswers};
             }
             
-            // Снова конвертируем в массив для JSON
-            const finalAnswers = {};
-             for (const id in answersToSave) {
-                finalAnswers[id] = { ...answersToSave[id], selected: Array.from(answersToSave[id].selected) };
+            for (const id in allAnswers) {
+                serializableAnswers[id] = { ...allAnswers[id], selected: Array.from(allAnswers[id].selected) };
             }
 
             const progress = {
                 currentMode: currentMode,
                 currentIndex: currentIndex,
                 rawQuestions: activeQuestions, 
-                answers: finalAnswers
+                answers: serializableAnswers
             };
             localStorage.setItem(storageKey, JSON.stringify(progress));
         }
