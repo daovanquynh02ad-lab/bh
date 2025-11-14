@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Биохимия (PRO Тренажер)</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg: #F9F9F9;
+            --card-bg: #FFFFFF;
+            --text-primary: #111111;
+            --text-secondary: #555555;
+            --accent: #5E5CE6; /* Apple Purple */
+            --accent-light: #F5F5FF;
+            --success: #34C759;
+            --success-light: #F0FFF4;
+            --error: #FF3B30;
+            --error-light: #FFF0F0;
+            --border: #E5E5E5;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --tg-color: #2481cc;
+        }
+
+        [data-theme="dark"] {
+            --bg: #000000;
+            --card-bg: #1C1C1E;
+            --text-primary: #FFFFFF;
+            --text-secondary: #8D8D93;
+            --accent: #6C63FF; /* Ярче на темном */
+            --accent-light: #2C2C2E;
+            --success: #30D158;
+            --success-light: #2C2C2E;
+            --error: #FF453A;
+            --error-light: #2C2C2E;
+            --border: #3A3A3C;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        html, body {
+            font-family: var(--font);
+            background-color: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            touch-action: manipulation;
+        }
+
+        .container {
+            max-width: 640px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px 20px 140px 20px; /* Отступ для плавающего футера */
+        }
+
+        /* --- ЭКРАНЫ --- */
+        .screen {
+            display: none;
+            flex-direction: column;
+            width: 100%;
+            flex: 1;
+            animation: fadeIn 0.3s ease-out;
+        }
+        .screen.active {
+            display: flex;
+        }
+        
+        /* --- СТАРТОВЫЙ ЭКРАН --- */
+        .start-header {
+            margin: 20px 0 30px 0;
+            text-align: center;
+        }
+        .start-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+        .start-header p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        /* --- НОВЫЙ БЛОК ВЫБОРА ТЕМ --- */
+        .topic-selector {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .topic-selector h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            padding-left: 10px;
+        }
+        .topic-list {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .topic-choice {
+            display: flex;
+            align-items: center;
+            padding: 12px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        .topic-choice:hover {
+            background-color: var(--bg);
+        }
+        .topic-choice input {
+            transform: scale(1.2);
+            margin-right: 12px;
+            accent-color: var(--accent);
+        }
+        .topic-choice span {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-left: auto;
+        }
+        .select-all-btn {
+            background: none;
+            border: none;
+            color: var(--accent);
+            font-weight: 600;
+            cursor: pointer;
+            padding: 10px;
+            font-size: 0.9rem;
+        }
+
+        .start-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .menu-btn {
+            padding: 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s;
+            touch-action: manipulation;
+        }
+        .menu-btn:hover {
+            border-color: var(--accent);
+            background: var(--card-bg);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        .menu-btn.primary {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            font-weight: 700;
+        }
+        .menu-btn.primary:hover {
+            background-color: var(--accent-hover);
+            border-color: var(--accent-hover);
+        }
+        .menu-btn i {
+            width: 20px;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+        .menu-btn:hover i { color: var(--accent); }
+        .menu-btn.primary i { color: white; }
+
+        .top-settings {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .top-controls-group {
+            display: flex;
+            gap: 10px;
+        }
+        .theme-toggle {
+            background: var(--card-bg);
+            border: 2px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            touch-action: manipulation;
+        }
+        .theme-toggle i { font-size: 1.2rem; }
+        .theme-toggle:hover {
+            color: var(--text-primary);
+            border-color: var(--text-primary);
+        }
+        .tg-icon {
+            color: var(--tg-color);
+            font-size: 1.1rem;
+        }
+        .theme-toggle:hover .tg-icon { color: var(--tg-color); }
+        
+        .progress-pill {
+            background: var(--card-bg);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        /* --- ЭКРАН ТЕСТА --- */
+        .quiz-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            padding: 25px;
+            width: 100%;
+            border: 1px solid var(--border);
+            margin-top: 20px;
+        }
+        .q-id {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+        .q-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 30px;
+            color: var(--text-primary);
+        }
+        
+        .options-list { display: flex; flex-direction: column; gap: 12px; }
+        .option {
+            background: var(--bg);
+            border: 2px solid var(--bg);
+            padding: 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            line-height: 1.4;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            touch-action: manipulation;
+        }
+        .option:hover:not(.disabled) { border-color: var(--accent); }
+        
+        .option-marker {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+            position: relative;
+        }
+        .option-marker i {
+            font-size: 12px;
+            color: white;
+            opacity: 0;
+            transition: 0.2s;
+        }
+
+        .option.selected:not(.disabled) {
+            border-color: var(--accent);
+            background: var(--accent-light);
+        }
+        .option.selected:not(.disabled) .option-marker {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+        .option.selected:not(.disabled) .option-marker i {
+            opacity: 1;
+            content: '\f00c'; 
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+        }
+
+        .option.correct {
+            background: var(--success-light);
+            border-color: var(--success);
+            color: var(--text-primary);
+        }
+        .option.correct .option-marker {
+            background: var(--success);
+            border-color: var(--success);
+        }
+        .option.correct .option-marker i {
+            opacity: 1;
+            content: '\f00c';
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+        }
+        
+        .option.incorrect {
+            background: var(--error-light);
+            border-color: var(--error);
+            color: var(--text-primary);
+        }
+        .option.incorrect .option-marker {
+            background: var(--error);
+            border-color: var(--error);
+        }
+        .option.incorrect .option-marker i {
+            opacity: 1;
+            content: '\f00d';
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+        }
+
+        .option.missed {
+            border: 2px dashed var(--success);
+            background: var(--success-light);
+            opacity: 0.8;
+        }
+        .option.disabled { cursor: default; }
+
+        /* --- ФУТЕР --- */
+        .quiz-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(180deg, rgba(255,255,255,0) 0%, var(--card-bg) 30%);
+            border-top: 1px solid var(--border);
+        }
+        [data-theme="dark"] .quiz-footer {
+            background: linear-gradient(180deg, rgba(0,0,0,0) 0%, var(--card-bg) 30%);
+        }
+
+        .quiz-footer .container { padding: 0; }
+        .controls {
+            display: grid;
+            grid-template-columns: 60px 1fr 60px;
+            gap: 15px;
+        }
+        .nav-btn {
+            height: 50px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            box-shadow: var(--shadow);
+            touch-action: manipulation;
+        }
+        .nav-btn:hover:not(:disabled) {
+            background: var(--bg);
+            border-color: var(--accent);
+        }
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        
+        .action-btn {
+            height: 50px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1rem;
+            color: white;
+            background: var(--accent);
+            box-shadow: var(--shadow);
+            touch-action: manipulation;
+        }
+        .action-btn:disabled {
+            background: var(--text-secondary);
+            box-shadow: none;
+            opacity: 0.5;
+        }
+        .action-btn.correct { background: var(--success); }
+        .action-btn.incorrect { background: var(--error); }
+        .action-btn:active:not(:disabled) { transform: scale(0.98); }
+
+        /* --- РЕЗУЛЬТАТЫ --- */
+        .stat-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+        .stat-val {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        .stat-val.correct { color: var(--success); }
+        .stat-val.error { color: var(--error); }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <div id="start-screen" class="screen active">
+            <div class="top-settings">
+                <span></span> <div class="top-controls-group">
+                    <a href="https://t.me/stewonly" target="_blank" class="theme-toggle" aria-label="Telegram">
+                        <i class="fab fa-telegram-plane tg-icon"></i>
+                    </a>
+                    <button class="theme-toggle" onclick="toggleTheme()" id="theme-toggle-btn-start">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="start-header">
+                <h1>Биохимия: Углеводы</h1>
+                <p>Тренажер по темам коллоквиума.</p>
+            </div>
+            
+            <div class="topic-selector">
+                <h3>Выберите темы:</h3>
+                <div class="topic-list" id="topic-list">
+                    </div>
+                <button class="select-all-btn" onclick="toggleSelectAll(this)">Выбрать все</button>
+            </div>
+            
+            <div class="start-controls">
+                <div id="resume-block" style="display:none; width: 100%;">
+                    <button class="menu-btn primary" onclick="startQuiz('resume')">
+                        <i class="fas fa-play"></i> &nbsp; Продолжить
+                    </button>
+                </div>
+                <button class="menu-btn" onclick="startQuiz('new')">
+                    <i class="fas fa-redo"></i> &nbsp; Начать (по порядку)
+                </button>
+                <button class="menu-btn" onclick="startQuiz('shuffle')">
+                    <i class="fas fa-random"></i> &nbsp; Случайный порядок
+                </button>
+                <button class="menu-btn primary" id="mistakes-btn-start" style="display:none;" onclick="startQuiz('mistakes')">
+                    <i class="fas fa-bug"></i> &nbsp; Работа над ошибками
+                </button>
+            </div>
+        </div>
+
+        <div id="quiz-screen" class="screen">
+            <div class="top-settings" style="margin-bottom: 20px;">
+                <div class="progress-pill" id="progress-pill">1 / 91</div>
+                <div class="top-controls-group">
+                    <a href="https://t.me/stewonly" target="_blank" class="theme-toggle" aria-label="Telegram">
+                        <i class="fab fa-telegram-plane tg-icon"></i>
+                    </a>
+                    <button class="theme-toggle" onclick="toggleTheme()" id="theme-toggle-btn-quiz">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="quiz-card" id="question-card">
+                <div class="q-id" id="q-id-display">#...</div>
+                <div class="q-title" id="q-text">Загрузка...</div>
+                <div class="options-list" id="options-list"></div>
+            </div>
+        </div>
+
+        <div id="result-screen" class="screen">
+             <div class="start-header" style="margin:0;">
+                <h1 id="result-title">Тест завершен!</h1>
+                <p id="result-subtitle" style="font-size: 1.5rem; font-weight: 700; color: var(--text-primary); margin-top: 10px;">Результат: <span id="final-score">0%</span></p>
+            </div>
+            <div class="result-stats" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; margin: 30px 0;">
+                <div class="stat-box">
+                    <div class="stat-val correct" id="correct-val">0</div>
+                    <div class="stat-label">Верно</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-val error" id="error-val">0</div>
+                    <div class="stat-label">Ошибки</div>
+                </div>
+            </div>
+            <div class="start-controls" style="margin-top: 20px;">
+                 <button class="menu-btn primary" id="mistakes-btn-end" onclick="startQuiz('mistakes')" style="display:none">
+                    <i class="fas fa-bug"></i> &nbsp; Работа над ошибками
+                </button>
+                <button class="menu-btn" onclick="location.reload()">
+                    <i class="fas fa-home"></i> &nbsp; В главное меню
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="quiz-footer" id="quiz-footer" style="display: none;">
+        <div class="container" style="padding-bottom: 0;">
+             <div class="controls">
+                <button class="nav-btn" id="prev-btn" onclick="prevQ()"><i class="fas fa-chevron-left"></i></button>
+                <button class="action-btn" id="main-btn" onclick="handleMainClick()">Ответить</button>
+                <button class="nav-btn" id="next-btn" onclick="nextQ()"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // --- БАЗА ДАННЫХ ВОПРОСОВ (ПОЛНАЯ) ---
+        // (Разбита по разделам для фильтрации)
+
+        const topicData = {
+            s3: {
+                name: "Строение углеводов",
+                questions: [
+                    {id:"3.1",q:"Укажите основной дисахарид молока млекопитающих.",opts:["Сахароза.","Лактоза.","Мальтоза.","Изомальтоза."],correct:[1]},
+                    {id:"3.2",q:"Выберите дисахарид, получаемый из тростника.",opts:["Сахароза.","Лактоза.","Мальтоза.","Изомальтоза."],correct:[0]},
+                    {id:"3.3",q:"Выберите резервный полисахарид растений.",opts:["Крахмал.","Целлюлоза.","Гликоген.","ГАГ."],correct:[0]},
+                    {id:"3.4",q:"Укажите структурный полисахарид растений.",opts:["Крахмал.","Целлюлоза.","Гликоген.","ГАГ."],correct:[1]},
+                    {id:"3.5",q:"Укажите резервный полисахарид животных.",opts:["Крахмал.","Целлюлоза.","Гликоген.","ГАГ."],correct:[2]},
+                    {id:"3.6",q:"Какие связи изомальтаза расщепляет в изомальтозе?",opts:["а-(1-4) гликозидные связи.","а-(1-6) гликозидные связи.","а-(1-2) гликозидные связи.","b-(1-4) гликозидные связи."],correct:[1]},
+                    {id:"3.7",q:"Какие связи мальтаза расщепляет в мальтозе?",opts:["а-(1-4) гликозидные связи.","а-(1-6) гликозидные связи.","а-(1-2) гликозидные связи.","b-(1-4) гликозидные связи."],correct:[0]},
+                    {id:"3.8",q:"Какие связи сахараза расщепляет в сахарозе?",opts:["а-(1-4) гликозидные связи.","а-(1-6) гликозидные связи.","a-1-b2 гликозидные связи.","b-(1-4) гликозидные связи."],correct:[2]},
+                    {id:"3.9",q:"Какие связи лактаза расщепляет в лактозе?",opts:["а-(1-4) гликозидные связи.","а-(1-6) гликозидные связи.","а-(1-2) гликозидные связи.","b-(1-4) гликозидные связи."],correct:[3]},
+                    {id:"3.10",q:"Какие связи a-амилаза расщепляет в гликогене?",opts:["а-(1-4) гликозидные связи.","а-(1-6) гликозидные связи.","а-(1-2) гликозидные связи.","b-(1-4) гликозидные связи."],correct:[0]},
+                    {id:"3.11",q:"Какие связи a-амилаза расщепляет в крахмале?",opts:["а-(1-4) гликозидные связи.","а-(1-6) гликозидные связи.","а-(1-2) гликозидные связи.","b-(1-4) гликозидные связи."],correct:[0]},
+                    {id:"3.12",q:"Выберите дисахарид, поступающий с продуктами, содержащими частично гидролизованный крахмал.",opts:["Сахароза.","Лактоза.","Мальтоза.","Целлобиоза."],correct:[2]},
+                    {id:"3.13",q:"Какими связями связаны остатки глюкозы в гликогене в точках ветвления?",opts:["а-(1-4) гликозидными связями.","а-(1-6) гликозидными связями.","а-(1-2) гликозидными связями.","b-(1-4) гликозидными связями."],correct:[1]},
+                    {id:"3.14",q:"Какими связями связаны остатки глюкозы в амилопектине в точках ветвления?",opts:["а-(1-4) гликозидными связями.","а-(1-6) гликозидными связями.","а-(1-2) гликозидными связями.","b-(1-4) гликозидными связями."],correct:[1]},
+                    {id:"3.15",q:"Какими связями связаны остатки глюкозы в целлюлозе?",opts:["а-(1-4) гликозидными связями.","а-(1-6) гликозидными связями.","а-(1-2) гликозидными связями.","b-(1-4) гликозидными связями."],correct:[3]},
+                    {id:"3.16",q:"Какими связями связаны остатки глюкозы в амилозе?",opts:["а-(1-4) гликозидными связями.","а-(1-6) гликозидными связями.","а-(1-2) гликозидными связями.","b-(1-4) гликозидными связями."],correct:[0]},
+                    {id:"3.17",q:"Какими связями связаны остатки глюкозы в линейных участках гликогена?",opts:["а-(1-4) гликозидными связями.","а-(1-6) гликозидными связями.","а-(1-2) гликозидными связями.","b-(1-4) гликозидными связями."],correct:[0]},
+                    {id:"3.18",q:"К какому классу относится фермент, с отсутствием которого в кишечнике связана врождённая непереносимость молока?",opts:["Оксидоредуктазы.","Трансферазы.","Гидролазы.","Лиазы."],correct:[2]},
+                    {id:"3.19",q:"Из какого мономера состоит полимер крахмала?",opts:["а-Фруктозы.","b-Галактозы.","а-Глюкозы.","b-Глюкозы."],correct:[2]},
+                    {id:"3.20",q:"Выберите тип связи, образуемый между двумя моносахаридами.",opts:["Водородная связь.","Гликозидная связь.","Пептидная связь.","Эфирная связь."],correct:[1]},
+                    {id:"3.21",q:"Какое соединение относится к гетерополисахаридам?",opts:["Гликоген.","Крахмал.","Целлюлоза.","Гиалуроновая кислота."],correct:[3]},
+                    {id:"3.22",q:"Какое соединение относится к гетерополисахаридам?",opts:["Гликоген.","Крахмал.","Целлюлоза.","Хондроитинсульфат."],correct:[3]},
+                    {id:"3.23",q:"Какое соединение относится к моносахаридам?",opts:["Глюкоза.","Сахароза.","Мальтоза.","Лактоза."],correct:[0]},
+                    {id:"3.24",q:"Какое соединение относится к олигосахаридам?",opts:["Фруктоза.","Мальтоза.","Гиалуроновая кислота.","Крахмал."],correct:[1]},
+                    {id:"3.25",q:"Какое соединение относится к олигосахаридам?",opts:["Фруктоза.","Лактоза.","Гиалуроновая кислота.","Крахмал."],correct:[1]},
+                    {id:"3.26",q:"Какое соединение относится к гомополисахаридам?",opts:["Галактоза.","Крахмал.","Хондроитинсульфат.","Гепарин."],correct:[1]},
+                    {id:"3.27",q:"Какое соединение относится к альдозам?",opts:["Фруктоза.","Глицериновый альдегид.","Диоксиацетон.","Рибулоза."],correct:[1]},
+                    {id:"3.28",q:"Какое соединение относится к кетозам?",opts:["Глюкоза.","Фруктоза.","Галактоза.","Рибоза."],correct:[1]},
+                    {id:"3.29",q:"Какие углеводы выполняют преимущественно структурную функцию?",opts:["Гликоген.","Фруктоза.","Мальтоза.","Хондроитин-6-сульфат."],correct:[3]},
+                    {id:"3.30",q:"Выберите правильное утверждение.",opts:["Составной компонент целлюлозы - мальтоза.","При кислотном гидролизе крахмала образуется лактоза.","При расщеплении мальтозы мальтазой образуется a-глюкоза.","Продуктом гидролиза крахмала и гликогена является галактоза."],correct:[2]},
+                    {id:"3.31",q:"Какие из соединений относятся к гомополисахаридам?",opts:["Крахмал, гликоген.","Хондроитинсульфат, гиалуроновая кислота.","Целлюлоза, хондроитинсульфат.","Кератансульфат, гепарин."],correct:[0]},
+                    {id:"3.32",q:"В состав какого соединения входит рибоза?",opts:["Токоферола.","Тиамина.","НАД.","Липоевой кислоты."],correct:[2]},
+                    {id:"3.33",q:"В состав какого соединения входит рибоза?",opts:["ДНК.","РНК.","ТГФК.","Липоевой кислоты."],correct:[1]},
+                    {id:"3.34",q:"В состав какого соединения входит дезоксирибоза?",opts:["ДНК.","Биотина.","РНК.","Липоевой кислоты."],correct:[0]},
+                    {id:"3.35",q:"Выберите верное утверждение.",opts:["Глюкоза является кетогексозой.","Глюкоза является дисахаридом.","Глюкоза является альдопентозой.","Глюкоза является альдогексозой."],correct:[3]},
+                    {id:"3.36",q:"Выберите верное утверждение.",opts:["Фруктоза является кетогексозой.","Фруктоза является кетопентозой.","Фруктоза является альдопентозой.","Фруктоза является альдогексозой."],correct:[0]},
+                    {id:"3.37",q:"Выберите углевод, который входит в состав нуклеиновых кислот.",opts:["Рибоза.","Галактоза.","Глюкоза.","Мальтоза."],correct:[0]},
+                    {id:"3.38",q:"Какие моносахариды образуются при гидролизе сахарозы?",opts:["Глюкоза и галактоза.","Манноза и глюкоза.","Галактоза и фруктоза.","Глюкоза и фруктоза."],correct:[3]},
+                    {id:"3.39",q:"Какой из моносахаридов относится к пентозам?",opts:["Глюкоза.","Фруктоза.","Галактоза.","Рибоза."],correct:[3]},
+                    {id:"3.40",q:"К какой группе углеводов относятся природные углеводы амилоза и целлюлоза?",opts:["Моносахариды.","Полисахариды.","Олигосахариды.","Гетерополисахариды."],correct:[1]},
+                    {id:"3.41",q:"Какой моносахарид является продуктом полного гидролиза гликогена?",opts:["а-глюкоза.","b-глюкоза.","Глюкозо-6-фосфат.","Фруктозо-6-фосфат."],correct:[0]},
+                    {id:"3.42",q:"Через какие атомы углерода связаны остатки глюкозы в молекуле крахмала?",opts:["1-1, 1-4.","1-2, 1-4.","1-4, 1-6.","1-2, 1-6."],correct:[2]},
+                    {id:"3.43",q:"Какие моносахариды образуются при гидролизе тростникового сахара?",opts:["Манноза и глюкоза.","Фруктоза и глюкоза.","Галактоза и глюкоза.","Фруктоза и галактоза."],correct:[1]},
+                    {id:"3.44",q:"Какой из моносахаридов относится к триозам?",opts:["Глюкоза.","Фруктоза.","Эритроза.","Диоксиацетон."],correct:[3]},
+                    {id:"3.45",q:"Какой из моносахаридов относится к тетрозам?",opts:["Глюкоза.","Фруктоза.","Эритроза.","Диоксиацетон."],correct:[2]},
+                    {id:"3.46",q:"Какой из моносахаридов относится к гексозам?",opts:["Манноза.","Рибоза.","Эритроза.","Ксилоза."],correct:[0]},
+                    {id:"3.47",q:"Какие соединения содержат четыре углеродных атома?",opts:["Фосфоенолпируват и метионин.","Эритроза и аспартат.","Ксилулоза и аспарагин.","Фосфоглицерат и серин."],correct:[1]},
+                    {id:"3.48",q:"Какие соединения содержат три углеродных атома?",opts:["Фосфоенолпируват и метионин.","Эритроза и аспартат.","Ксилулоза и аспарагин.","Фосфоглицерат и серин."],correct:[3]},
+                    {id:"3.49",q:"Каково число углеродных атомов в молекуле седогептулозы?",opts:["5.","6.","7.","8."],correct:[2]},
+                    {id:"3.50",q:"Что образуется, если в раствор глюкозы добавить фруктозу?",opts:["Сахароза.","Лактоза.","Мальтоза.","Ничего не образуется."],correct:[3]},
+                    {id:"3.51",q:"Выберите наиболее сладкий на вкус углевод.",opts:["Глюкоза.","Галактоза.","Сахароза.","Лактоза."],correct:[2]},
+                    {id:"3.52",q:"Выберите транспортную форму углеводов в растениях.",opts:["Глюкоза.","Галактоза.","Сахароза.","Лактоза."],correct:[2]},
+                    {id:"3.53",q:"Выберите продукт восстановления альдегидной группы глюкозы.",opts:["Глюкаровая кислота.","Глюконовая кислота.","Глюкуроновая кислота.","Сорбит."],correct:[3]},
+                    {id:"3.54",q:"Выберите продукт окисления альдегидной группы глюкозы.",opts:["Глюкаровая кислота.","Глюконовая кислота.","Глюкуроновая кислота.","Сорбит."],correct:[1]},
+                    {id:"3.55",q:"Выберите продукт окисления первичной ОН-группы глюкозы.",opts:["Глюкаровая кислота.","Глюконовая кислота.","Глюкуроновая кислота.","Сорбит."],correct:[2]},
+                    {id:"3.56",q:"Выберите верное утверждение.",opts:["Глюкоза и фруктоза являются гомологами.","Глюкоза и фруктоза являются изомерами.","Глюкоза и фруктоза являются энантиомерами.","Глюкоза и фруктоза являются гептозами."],correct:[1]},
+                    {id:"3.57",q:"Выберите верное утверждение.",opts:["Гликоген отличается от амилопектина более частым расположением участков ветвления...","Гликоген отличается от амилопектина более редким расположением участков ветвления...","Гликоген отличается от амилопектина наличием в структуре... остатков b-галактозы.","Гликоген отличается от амилопектина наличием в структуре... остатков лактозы."],correct:[0]},
+                    {id:"3.58",q:"Выберите полисахарид, состоящий из остатков a-глюкозы и не имеющий ветвлений.",opts:["Гликоген.","Амилопектин.","Амилоза.","Целлюлоза."],correct:[2]},
+                    {id:"3.59",q:"Как называется белок, находящийся в центре сформированной молекулы гликогена...",opts:["Амилопектин.","Гликогенин.","Крахмал.","Гликозаминогликан."],correct:[1]},
+                    {id:"3.60",q:"Выберите полисахарид растительного происхождения, состоящий из остатков b-глюкозы и не имеющий ветвлений.",opts:["Целлюлоза.","Целлобиоза.","Амилоза.","Амилопектин."],correct:[0]},
+                    {id:"3.61",q:"Выберите верное утверждение.",opts:["Гликогенин - полисахарид...","Гликогенин - гликопротеин, содержащий a-(1-4)-полиглюкозную цепь...","Гликогенин - протеогликан...","Гликогенин - гликозаминогликан..."],correct:[1]},
+                    {id:"3.62",q:"Чем отличаются молекулы амилопектина от молекулы гликогена?",opts:["Типом связей в участках ветвления...","Мономерами глюкозы, входящими в состав...","Частотой расположения участков ветвления...","Дисахаридами, которые могут образоваться при гидролизе..."],correct:[2]},
+                    {id:"3.63",q:"Какой полисахарид состоит из остатков b-глюкозы?",opts:["Целлюлоза.","Амилоза.","Амилопектин.","Гликоген."],correct:[0]},
+                    {id:"3.64",q:"Какой полисахарид синтезируется в клетках человека?",opts:["Целлюлоза.","Амилоза.","Амилопектин.","Гликоген."],correct:[3]}
+                ]
+            },
+            s9: {
+                name: "Регуляция обмена углеводов",
+                questions: [
+                    {id:"9.1",q:"Какой рибонуклеотид оказывает ингибирующее действие на общие пути катаболизма (гликолиз, ...)?",opts:["АМФ.","АТФ.","УМФ.","ЦТФ."],correct:[1]},
+                    {id:"9.2",q:"Выберите верное утверждение.",opts:["Глюкокиназа активируется инсулином.","Глюкокиназа ингибируется инсулином.","Глюкокиназа активируется глюкагоном.","Глюкокиназа ингибируется цитратом."],correct:[0]},
+                    {id:"9.3",q:"Какое соединение способно ингибировать гексокиназу по принципу обратной связи?",opts:["Глюкоза.","Лактат.","АМФ.","Глюкозо-6-фосфат."],correct:[3]},
+                    {id:"9.4",q:"Укажите скорость-лимитирующий фермент гликолиза.",opts:["Гексокиназа.","Фосфофруктокиназа-1.","Альдолаза.","Лактатдегидрогеназа."],correct:[1]},
+                    {id:"9.5",q:"Выберите верное утверждение.",opts:["Фосфофруктокиназа-1 активируется АМФ.","Фосфофруктокиназа-1 ингибируется АМФ.","Фосфофруктокиназа-1 ингибируется фруктозо-2,6-бисфосфатом.","Фосфофруктокиназа-1 активируется цитратом."],correct:[0]},
+                    {id:"9.6",q:"Какое вещество способно активировать фосфофруктокиназу-1?",opts:["Глюкоза.","АМФ.","ЦДФ.","АТФ."],correct:[1]},
+                    {id:"9.7",q:"Выберите верное утверждение.",opts:["Фосфофруктокиназа-1 активируется фруктозо-2,6-бисфосфатом.","Фосфофруктокиназа-1 ингибируется фруктозо-2,6-бисфосфатом.","Фосфофруктокиназа-1 активируется цитратом.","Фосфофруктокиназа 1 ингибируется АМФ."],correct:[0]},
+                    {id:"9.8",q:"Выберите верное утверждение.",opts:["Фосфофруктокиназа-1 ингибируется цитратом.","Фосфофруктокиназа-1 активируется фруктозо-1, 6-бисфосфатом.","Фосфофруктокиназа-1 активируется НАДН(Н+).","Фосфофруктокиназа-1 инактивируется АМФ."],correct:[0]},
+                    {id:"9.9",q:"Какое соединение может ингибировать активность фосфофруктокиназы-1?",opts:["АТФ.","АДФ.","НАД+","АМФ."],correct:[0]},
+                    {id:"9.10",q:"Какие из соединений способны ингибировать фосфофруктокиназу-1?",opts:["АМФ и АДФ.","Лактат и пируват.","АТФ и цитрат.","Глицеральдегид-3-фосфат и диоксиацетонфосфат."],correct:[2]},
+                    {id:"9.11",q:"Какой фермент катализирует реакцию гликолиза, скорость которой регулируется АТФ и цитратом?",opts:["Фосфоглюкоизомераза.","Фосфофруктокиназа-1.","Енолаза.","Пируваткиназа."],correct:[1]},
+                    {id:"9.12",q:"Какой фермент катализирует реакцию гликолиза, скорость которой регулируется АТФ и цитратом?",opts:["Фосфоглюкоизомераза.","Фосфофруктокиназа-1.","Пируватдегидрогеназа.","Пируваткиназа."],correct:[1]},
+                    {id:"9.13",q:"При возрастании концентрации какого соединения уменьшается скорость гликолиза в мышечной ткани?",opts:["АМФ.","АДФ.","АТФ.","НАДФ+."],correct:[2]},
+                    {id:"9.14",q:"При возрастании концентрации какого соединения уменьшается скорость гликолиза в мышечной ткани?",opts:["АМФ.","Цитрата.","АДФ.","НАДФ+."],correct:[1]},
+                    {id:"9.15",q:"Какие из веществ способны ингибировать фосфофруктокиназу-1?",opts:["ГТФ И УТФ.","Лактат и пируват.","АТФ и цитрат.","АДФ и АМФ."],correct:[2]},
+                    {id:"9.16",q:"Выберите фермент, катализирующий необратимую стадию гликолиза.",opts:["Енолаза.","Альдолаза.","Пируваткиназа.","Глицеральдегидфосфатдегидрогеназа."],correct:[2]},
+                    {id:"9.17",q:"Выберите верное утверждение.",opts:["Пируваткиназа активируется АТФ.","Пируваткиназа ингибируется АТФ.","Пируваткиназа активируется глюкагоном.","Пируваткиназа ингибируется инсулином."],correct:[1]},
+                    {id:"9.18",q:"Выберите верное утверждение.",opts:["Пируваткиназа активируется глюкагоном.","Пируваткиназа ингибируется глюкагоном.","Пируваткиназа активируется АТФ.","Пируваткиназа ингибируется инсулином."],correct:[1]},
+                    {id:"9.19",q:"Выберите верное утверждение.",opts:["Пируваткиназа активируется инсулином.","Пируваткиназа ингибируется инсулином.","Пируваткиназа активируется АТФ.","Пируваткиназа ингибируется цитратом."],correct:[0]},
+                    {id:"9.20",q:"Какой из гормонов активирует гликолиз?",opts:["Адреналин.","Глюкагон.","Инсулин.","Вазопрессин."],correct:[2]},
+                    {id:"9.21",q:"Активность какого фермента гликолиза регулируется инсулином?",opts:["Гексокиназы.","Фосфоглюкоизомеразы.","Альдолазы.","Лактатдегидрогеназы."],correct:[0]},
+                    {id:"9.22",q:"Какое соединение реципрокно регулирует процессы гликолиза и глюконеогенеза?",opts:["Фруктозо-1,6-бисфосфат.","1,3-Бисфосфоглицерат.","Фруктозо-2,6-бисфосфат.","Фруктозо-6-фосфат."],correct:[2]},
+                    {id:"9.23",q:"Какой гормон стимулирует глюконеогенез при полном длительном голодании?",opts:["Инсулин.","Кортизол.","Тироксин.","Альдостерон."],correct:[1]},
+                    {id:"9.24",q:"Какое действие оказывают на гликолиз и глюконеогенез глюкагон и адреналин?",opts:["Ингибируют глюконеогенез и стимулируют гликолиз.","Стимулируют глюконеогенез и гликолиз.","Стимулируют глюконеогенез и ингибируют гликолиз.","Ингибируют глюконеогенез и гликолиз."],correct:[2]},
+                    {id:"9.25",q:"Какой гормон ингибирует глюконеогенез?",opts:["Инсулин.","Глюкагон.","Тестостерон.","Кальцитонин."],correct:[0]},
+                    {id:"9.26",q:"Какой из гормонов стимулирует синтез гликогена?",opts:["Инсулин.","Кортизол.","Адреналин.","Глюкагон."],correct:[0]},
+                    {id:"9.27",q:"Какой из гормонов стимулирует синтез гликогена?",opts:["Адреналин.","Инсулин.","Глюкагон.","Альдостерон."],correct:[1]},
+                    {id:"9.28",q:"Какой из гормонов стимулирует синтез гликогена?",opts:["Адреналин.","Инсулин.","Глюкагон.","Тироксин."],correct:[1]},
+                    {id:"9.29",q:"Выберите верное утверждение.",opts:["Гликогенсинтаза активируется инсулином.","Гликогенсинтаза ингибируется инсулином.","Гликогенсинтаза активируется глюкагоном.","Гликогенсинтаза ингибируется цитратом."],correct:[0]},
+                    {id:"9.30",q:"Какой фермент переводит гликогенсинтазу в активное состояние?",opts:["Фосфатаза гликогенсинтазы.","Киназа фосфорилазы.","Фосфатаза фосфорилазы гликогена.","Фосфорилаза гликогена."],correct:[0]},
+                    {id:"9.31",q:"Выберите верное утверждение.",opts:["Гликогенфосфорилаза активируется инсулином.","Гликогенфосфорилаза ингибируется инсулином.","Гликогенфосфорилаза ингибируется глюкагоном.","Гликогенфосфорилаза активируется ацетил-КоА."],correct:[1]},
+                    {id:"9.32",q:"Как влияет увеличение концентрации Ca2+ на содержание гликогена?",opts:["Стимулирует синтез гликогена, активируя гликогенсинтазу.","Стимулирует распад гликогена, активируя киназу фосфорилазы...","Не оказывает влияния на синтез гликогена.","Увеличивает синтез гликогена, активируя... УДФ-глюкозы."],correct:[1]},
+                    {id:"9.33",q:"Укажите способ регуляции гликогенфосфорилазы и гликогенсинтазы.",opts:["Метилирование-деметилирование.","Гидроксилирование.","Фосфорилирование-дефосфорилирование.","Алкилирование."],correct:[2]},
+                    {id:"9.34",q:"Укажите способ регуляции активности фосфорилазы гликогена.",opts:["Метилирование-деметилирование.","Сульфатирование-десульфирование.","Фосфорилирование-дефосфорилирование.","Ацилирование-деацилирование."],correct:[2]},
+                    {id:"9.35",q:"Как влияет дефосфорилирование на фосфорилазу гликогена и гликогенсинтазу?",opts:["Активирует фосфорилазу... и ингибирует гликогенсинтазу.","Ингибирует фосфорилазу... и активирует гликогенсинтазу.","Активирует фосфорилазу... и гликогенсинтазу.","Ингибирует фосфорилазу... и гликогенсинтазу."],correct:[1]},
+                    {id:"9.36",q:"Как влияет фосфорилирование на фосфорилазу гликогена и гликогенсинтазу?",opts:["Активирует фосфорилазу... и ингибирует гликогенсинтазу.","Ингибирует фосфорилазу... и активирует гликогенсинтазу.","Активирует фосфорилазу... и гликогенсинтазу.","Ингибирует фосфорилазу... и гликогенсинтазу."],correct:[0]},
+                    {id:"9.37",q:"Какой фермент переводит фосфорилазу гликогена в неактивное состояние?",opts:["Фосфатаза гликогенсинтазы.","Киназа фосфорилазы.","Фосфатаза фосфорилазы гликогена.","Киназа киназы фосфорилазы гликогена."],correct:[2]},
+                    {id:"9.38",q:"Выберите верное утверждение.",opts:["Киназа фосфорилазы гликогена активна в фосфоририлированном состоянии, активирует...","Киназа фосфорилазы гликогена активна в дефосфоририлированном состоянии, активирует...","Киназа фосфорилазы гликогена активна в фосфоририлированном состоянии, инактивирует...","Киназа фосфорилазы гликогена активна в дефосфоририлированном состоянии, инактивирует..."],correct:[0]},
+                    {id:"9.39",q:"Укажите регуляторную роль цАМФ в обмене гликогена.",opts:["Активирует фосфорилазу... и ингибирует гликогенсинтазу.","Ингибирует фосфорилазу... и ингибирует гликогенсинтазу.","Активирует фосфорилазу... и активирует гликогенсинтазу.","Ингибирует фосфорилазу... и активирует гликогенсинтазу."],correct:[0]},
+                    {id:"9.40",q:"Гормон, который способствует активации глюкозо-6-фосфатдегидрогеназы.",opts:["Инсулин.","Адреналин.","Глюкагон.","Кортизол."],correct:[0]},
+                    {id:"9.41",q:"Какой процесс в организме активируется под действием кортизола?",opts:["Распад белков.","Синтез гликогена.","Гликолиз.","Пентозофосфатный путь."],correct:[0]},
+                    {id:"9.42",q:"Укажите гормон, вызывающий снижение концентрации глюкозы в крови.",opts:["Адреналин.","Кортизол.","Инсулин.","Глюкагон."],correct:[2]},
+                    {id:"9.43",q:"Какой гормон тормозит распад гликогена и стимулирует его синтез?",opts:["Адреналин.","Глюкагон.","Инсулин.","Кортизол."],correct:[2]},
+                    {id:"9.44",q:"Какой гормон поддерживает нормальный уровень глюкозы в крови натощак...",opts:["Инсулин.","Глюкагон.","Кортизол.","Тироксин."],correct:[1]},
+                    {id:"9.45",q:"Укажите возможную причину патологической гипергликемии.",opts:["Нарушение всасывания углеводов.","Нарушение... инсулиновых рецепторов...","Опухоли поджелудочной железы.","Голодание."],correct:[1]},
+                    {id:"9.46",q:"Укажите возможную причину физиологической гипергликемии.",opts:["Поступление глюкозы из ЖКТ после приёма пищи.","Недостаточная секреция инсулина.","Активация глюконеогенеза в печени при голодании.","Активация синтеза гликогена."],correct:[0]},
+                    {id:"9.47",q:"Какая патология обмена лежит в основе инсулиннезависимого сахарного диабета?",opts:["Нарушение регуляции гликолиза.","Нарушение инсулин-зависимого поглощения глюкозы клетками.","Повышение секреции глюкагона.","Понижение секреции адреналина."],correct:[1]},
+                    {id:"9.48",q:"Какое состояние может вызвать передозировка инсулина...?",opts:["Глюкозурию.","Гипергликемию.","Креатинурию.","Гипогликемию."],correct:[3]},
+                    {id:"9.49",q:"Выберите верное утверждение.",opts:["Количество глюкозы увеличивается в крови при введении инсулина.","Количество глюкозы увеличивается в крови при голодании.","Количество глюкозы увеличивается в крови при гиперфункции щитовидной железы.","Количество глюкозы увеличивается в крови при диете с преобладанием белков."],correct:[2]},
+                    {id:"9.50",q:"Почему высокие концентрации глюкозы вредны для организма?",opts:["Усиливается гликозилирование белков.","Снижается осмотическое давление крови.","Наблюдается гипопротеинемия.","Изменяется рН крови."],correct:[0]},
+                    {id:"9.51",q:"Какое из биохимических изменений характерно для сахарного диабета?",opts:["Уменьшение скорости распада гликогена в печени.","Уменьшение интенсивности деградации белка.","Уменьшение высвобождения глюкозы из печени.","Уменьшение захвата глюкозы мышечной и жировой тканью."],correct:[3]},
+                    {id:"9.52",q:"Какое из биохимических изменений характерно для сахарного диабета?",opts:["Усиление захвата глюкозы мышечной и жировой тканью.","Увеличение активности липопротеинлипазы...","Увеличение активности ферментов гликолиза.","Усиление распада гликогена в печени."],correct:[3]},
+                    {id:"9.53",q:"Для чего может быть использован глюкозо-толерантный тест?",opts:["Для диагностики гликогенозов.","Для выявления нарушения толерантности к глюкозе.","Для диагностики нарушений переваривания углеводов.","Для выявления несахарного диабета."],correct:[1]},
+                    {id:"9.54",q:"Для чего может быть использован глюкозо-толерантный тест?",opts:["Для диагностики гликогенозов.","Для контроля эффективности лечения сахарного диабета.","Для диагностики нарушений переваривания углеводов.","Для выявления осложнений сахарного диабета..."],correct:[1]},
+                    {id:"9.55",q:"Что является причиной сахарного диабета при болезни Иценко-Кушинга?",opts:["Первичная деструкция b-клеток...","Нарушение чувствительности тканей к инсулину.","Уменьшение образования инсулина.","Усиление глюконеогенеза."],correct:[3]},
+                    {id:"9.56",q:"Какой показатель является наиболее надёжным критерием степени компенсации сахарного диабета...?",opts:["Уровень гликозилированного гемоглобина.","Уровень гликемии после нагрузочной пробы.","Уровень гликемии натощак.","Средняя суточная гликемия."],correct:[0]},
+                    {id:"9.57",q:"Как влияют глюкокортикоиды на обмен углеводов?",opts:["Активируют гликолиз.","Стимулируют утилизацию глюкозы периферическими тканями.","Инактивируют ферменты пентозофосфатного пути...","Активируют глюконеогенез в печени."],correct:[3]},
+                    {id:"9.58",q:"Укажите возможное происхождение глюкозы, которую можно определить в плазме крови.",opts:["...из лактата в мышцах.","...при распаде гликогена в печени.","...при синтезе гликогена в мышцах.","...из ацетил-SКоА... в печени."],correct:[1]},
+                    {id:"9.59",q:"Укажите возможное происхождение глюкозы, которую можно определить в плазме крови.",opts:["...из лактата в мышцах.","...при переваривании в ЖКТ...","...из кетогенных аминокислот в мышцах.","...из ацетил-SКоА... в печени."],correct:[1]}
+                ]
+            },
+            s10: {
+                name: "Гликолиз",
+                questions: [
+                    {id:"10.1",q:"Какой фермент катализирует превращение глюкозо-6-фосфата во фруктозо-6-фосфат?",opts:["Гексокиназа.","Глюкозо-6-фосфатизомераза.","Фосфофруктокиназа-1.","Альдолаза."],correct:[1]},
+                    {id:"10.2",q:"Какой фермент катализирует превращение глюкозы в глюкозо-6-фосфат?",opts:["Гексокиназа.","Глюкозо-6-фосфатизомераза.","Фосфофруктокиназа-1.","Альдолаза."],correct:[0]},
+                    {id:"10.3",q:"Какой фермент катализирует превращение фруктозо-6-фосфата во фруктозо-1,6-бисфосфат?",opts:["Гексокиназа.","Глюкозофосфатизомераза.","Фосфофруктокиназа-1.","Альдолаза."],correct:[2]},
+                    {id:"10.4",q:"Какой фермент катализирует превращение фруктозо-1,6-бисфосфата в глицеральдегид-3-фосфат?",opts:["Гексокиназа.","Глюкозофосфатизомераза.","Фосфофруктокиназа-1.","Альдолаза."],correct:[3]},
+                    {id:"10.5",q:"Какой фермент катализирует превращение глицеральдегид-3-фосфата в 1,3-бисфосфо-глицерат?",opts:["Триозофосфатизомераза.","Глицеральдегидфосфатдегидрогеназа.","Фосфоглицераткиназа.","Енолаза."],correct:[1]},
+                    {id:"10.6",q:"Какой фермент катализирует превращение глицеральдегид-3-фосфата в диоксиацетонфосфат?",opts:["Триозофосфатизомераза.","Глицеральдегидфосфатдегидрогеназа.","Фосфоглицераткиназа.","Енолаза."],correct:[0]},
+                    {id:"10.7",q:"Какой фермент катализирует превращение 1,3-бисфосфоглицерата в 3-фосфоглицерат?",opts:["Триозофосфатизомераза.","Глицеральдегидфосфатдегидрогеназа.","Фосфоглицераткиназа.","Енолаза."],correct:[2]},
+                    {id:"10.8",q:"Какой фермент катализирует превращение фосфоенолпирувата в пируват?",opts:["Енолаза.","Пируваткиназа.","Лактатдегидрогеназа.","Фосфоглицеромутаза."],correct:[1]},
+                    {id:"10.9",q:"Какой фермент катализирует превращение пирувата в лактат?",opts:["Енолаза.","Пируваткиназа.","Лактатдегидрогеназа.","Фосфоглицеромутаза."],correct:[2]},
+                    {id:"10.10",q:"Укажите конечный продукт анаэробного гликолиза.",opts:["Пируват.","Лактат.","Оксалоацетат.","Ацетил-SKoA."],correct:[1]},
+                    {id:"10.11",q:"Какой фермент катализирует превращение 2-фосфоглицерата в фосфоенолпируват?",opts:["Енолаза.","Пируваткиназа.","Лактатдегидрогеназа.","Фосфоглицеромутаза."],correct:[0]},
+                    {id:"10.12",q:"Какой фермент катализирует превращение 3-фосфоглицерата в 2-фосфоглицерат?",opts:["Триозофосфатизомераза.","Глицеральдегидфосфатдегидрогеназа.","Фосфоглицераткиназа.","Фосфоглицеромутаза."],correct:[3]},
+                    {id:"10.13",q:"Укажите фермент, лимитирующий скорость гликолиза.",opts:["Енолаза.","Фосфофруктокиназа-1.","Фосфоглицераткиназа.","Триозофосфатизомераза."],correct:[1]},
+                    {id:"10.14",q:"Укажите фермент необратимой реакции гликолиза.",opts:["Триозофосфатизомераза.","Альдолаза.","Фосфофруктокиназа-1.","Лактатдегидрогеназа."],correct:[2]},
+                    {id:"10.15",q:"Укажите фермент, присутствующий только в печени и поджелудочной железе.",opts:["Фосфорилаза.","Гексокиназа.","Пируваткарбоксилаза.","Глюкокиназа."],correct:[3]},
+                    {id:"10.16",q:"Выберите верное утверждение.",opts:["Гексокиназа относится к классу трансфераз.","Гексокиназа катализирует реакцию превращения глюкозо-6-фосфата в глюкозу.","Гексокиназа НАД-зависимый фермент.","Гексокиназа специфична для клеток печени."],correct:[0]},
+                    {id:"10.17",q:"Какая реакция сопровождается образованием НАДН(Н+)?",opts:["Превращения глицеральдегид-3-фосфата в 1,3-бисфосфоглицерат.","Превращения пирувата в оксалоацетат.","Превращения оксалоацетата в фосфоенолпируват.","Превращения глюкозо-6-фосфата в фосфоглюконолактон."],correct:[0]},
+                    {id:"10.18",q:"Выберите верное утверждение.",opts:["В мышцах пируват может в одну стадию превратиться в фосфоенолпируват.","В мышцах пируват может в одну стадию превратиться в глицеральдегид-3-фосфат.","В мышцах пируват может в одну стадию превратиться в глюкозу.","В мышцах пируват может в одну стадию превратиться в лактат."],correct:[3]},
+                    {id:"10.19",q:"Укажите реакцию, лимитирующую скорость гликолиза.",opts:["Превращение глюкозы в глюкозо-6-фосфат.","Превращение пирувата в лактат.","Превращение фруктозо-6-фосфата во фруктозо-1,6-бисфосфат.","Превращение глицеральдегид-3-фосфата в 1,3-бисфосфоглицерат."],correct:[2]},
+                    {id:"10.20",q:"Выберите НАД-зависимый фермент гликолиза.",opts:["Глицеральдегид-3-фосфатдегидрогеназа.","Енолаза.","Малатдегидрогеназа.","Пируваткиназа."],correct:[0]},
+                    {id:"10.21",q:"Выберите реакцию, которая может протекать в клетках мышц в одну стадию.",opts:["Пируват -> фосфоенолпируват.","Глюкозо-6-фосфат -> глюкоза.","Пируват -> лактат.","Диоксиацетонфосфат -> 1,3-бисфосфоглицерат."],correct:[2]},
+                    {id:"10.22",q:"Выберите верное утверждение для реакции: пируват + НАДН(Н+) -> лактат + НАД+.",opts:["НАДН(Н+) восстанавливается, а лактат окисляется.","НАДН(Н+) восстанавливается, а пируват окисляется.","Лактат восстанавливается, а пируват окисляется.","НАДН(Н+) окисляется, а пируват восстанавливается."],correct:[3]},
+                    {id:"10.23",q:"Каков биологический смысл эффекта Пастера?",opts:["Подавление анаэробного гликолиза в присутствии кислорода.","Активация субстратного фосфорилирования.","Активация анаэробного гликолиза.","Подавление окислительного фосфорилирования."],correct:[0]},
+                    {id:"10.24",q:"Укажите необратимую реакцию гликолиза.",opts:["Лактатдегидрогеназная.","Альдолазная.","Гексокиназная.","Енолазная."],correct:[2]},
+                    {id:"10.25",q:"Что такое анаэробный гликолиз?",opts:["Окисление глюкозы в цитоплазме до лактата.","Окисление глюкозы в протеасомах до лактата.","Окисление глюкозы в митохондриях до пирувата.","Окисление глюкозы в митохондриях до лактата."],correct:[0]},
+                    {id:"10.26",q:"Укажите фермент гликолиза, катализирующий восстановление пирувата до лактата.",opts:["Глицеральдегид-3-фосфатдегидрогеназа.","Лактатдегидрогеназа.","Гексокиназа.","Глюкокиназа."],correct:[1]},
+                    {id:"10.27",q:"Какой метаболит гликолиза участвует в субстратном фосфорилировании?",opts:["Фосфодиоксиацетон.","Пируват.","1,3-Бисфосфоглицерат.","Глюкозо-6-фосфат."],correct:[2]},
+                    {id:"10.28",q:"Какой фермент катализирует реакцию субстратного фосфорилирования в гликолизе?",opts:["Фосфофруктокиназа-1.","Гексокиназа.","Протеинкиназа.","Пируваткиназа."],correct:[3]},
+                    {id:"10.29",q:"Какой фермент участвует в реакции оксидоредукции в анаэробном гликолизе?",opts:["Пируваткиназа.","Лактатдегидрогеназа.","Пируватдегидрогеназа.","Пируваткарбоксилаза."],correct:[1]},
+                    {id:"10.30",q:"Какая реакция гликолиза сопровождается субстратным фосфорилированием?",opts:["Превращения глюкозы в глюкозо-6-фосфат.","Превращения фруктозо-6-фосфата во фруктозо-1,6-бисфосфат.","Превращения глицеральдегид-3-фосфата в 1,3-дифосфоглицерат.","Превращения фосфоенолпирувата в пируват."],correct:[3]},
+                    {id:"10.31",q:"К какому классу ферментов относится фосфоглюкомутаза?",opts:["Лигазы.","Оксидоредуктазы.","Изомеразы.","Трансферазы."],correct:[2]},
+                    {id:"10.32",q:"В каких клетках анаэробный гликолиз служит основным источником энергии?",opts:["В миокардиоцитах.","В эритроцитах.","В гепатоцитах.","В клетках коры почек."],correct:[1]},
+                    {id:"10.33",q:"Выберите верное утверждение.",opts:["Реакции гликолитической оксидоредукции делают гликолиз независимым от наличия в клетке кислорода.","Реакции гликолитической оксидоредукции делают гликолиз независимым от наличия в клетке АТФ.","Реакции гликолитической оксидоредукции делают гликолиз независимым от транспорта в клетки глюкозы.","Реакции гликолитической оксидоредукции делают гликолиз независимым от наличия в клетке гликогена."],correct:[0]},
+                    {id:"10.34",q:"К какому эффекту приводит фосфорилирование глюкозы гексо- или глюкокиназой?",opts:["Увеличению способности проходить через мембраны.","Снижению метаболической активности глюкозы и облегчению её депонирования.","Снижению способности глюкозы проникать через цитоплазматические мембраны...","Увеличению концентрации глюкозы в плазме крови."],correct:[2]},
+                    {id:"10.35",q:"Какой фермент катализирует расщепление гексозы на триозы в процессе гликолиза?",opts:["Гексокиназа.","Фосфогексоизомераза.","Альдолаза.","Триозофосфатизомераза."],correct:[2]},
+                    {id:"10.36",q:"Какой субстрат является акцептором водорода от НАДН(Н+) в анаэробных условиях?",opts:["Пируват.","Лактат.","Глицеральдегид-3-фосфат.","Фосфоенолпируват."],correct:[0]},
+                    {id:"10.37",q:"Какое количество молекул АТФ образуется при анаэробном распаде одной молекулы глюкозы до молочной кислоты?",opts:["2.","3.","6.","9."],correct:[0]},
+                    {id:"10.38",q:"Какая реакция гликолиза сопровождается субстратным фосфорилированием?",opts:["Реакция превращения фосфоенолпирувата в пируват.","Реакция восстановления пирувата в лактат.","Реакция окисления глицеральдегид-3-фосфата в 1,3-бисфосфоглицерат.","Реакция превращения 2-фосфоглицерата в фосфоенолпируват."],correct:[0]},
+                    {id:"10.39",q:"Какая реакция гликолиза сопровождается субстратным фосфорилированием?",opts:["Превращения глюкозы в глюкозо-6-фосфат.","Превращения фруктозо-6-фосфата во фруктозо-1,6-дифосфат.","Превращения глицеральдегид-3-фосфата в 1,3-бисфосфоглицерат.","Превращения 1,3-бисфосфоглицерата в 3-фосфоглицерат."],correct:[3]},
+                    {id:"10.40",q:"Наличие какого соединения необходимо для превращения фруктозо-6-фосфата во фруктозо-1,6-бисфосфат...?",opts:["НАДФН(Н+).","ГТФ.","НАД+","АТФ."],correct:[3]},
+                    {id:"10.41",q:"Какой фермент гликолиза катализирует необратимую реакцию?",opts:["Гексокиназа.","Альдолаза.","Енолаза.","Лактатдегидрогеназа."],correct:[0]},
+                    {id:"10.42",q:"Укажите, какой аллостерический фермент гликолиза угнетается высокими концентрациями АТФ.",opts:["Глюкозо-6-фосфатизомераза.","Альдолаза.","Фосфофруктокиназа-1.","Гексокиназа."],correct:[2]},
+                    {id:"10.43",q:"Какой из перечисленных ферментов определяет скорость всего процесса распада глюкозы?",opts:["Глицеральдегид-3-фосфатдегидрогеназа.","Фосфофруктокиназа-1.","Пируваткиназа.","Енолаза."],correct:[1]},
+                    {id:"10.44",q:"Каков максимально возможный выход молекул АТФ при окислении одной молекулы глюкозы до пирувата?",opts:["2,5 молекулы АТФ.","7 молекул АТФ.","2 молекулы АТФ.","12 молекул АТФ."],correct:[1]},
+                    {id:"10.45",q:"Какой фермент катализирует реакцию гликолиза, которая сопровождается субстратным фосфорилированием?",opts:["Гексокиназа.","Лактатдегидрогеназа.","Фосфофруктокиназа-1.","Фосфоглицераткиназа."],correct:[3]},
+                    {id:"10.46",q:"Какой фермент катализирует реакцию гликолиза, которая сопровождается образованием АТФ?",opts:["Гексокиназа.","Енолаза.","Фосфофруктокиназа-1.","Пируваткиназа."],correct:[3]},
+                    {id:"10.47",q:"В чём заключается основное биологическое значение лактатдегидрогеназы в анаэробном гликолизе?",opts:["Окисляет НАДН(Н+).","Поставляет субстраты в ЦТК.","Регулирует рН крови.","Обеспечивает работу дыхательной цепи."],correct:[0]},
+                    {id:"10.48",q:"Активность какого фермента регулируется фруктозо-2,6-бисфосфатом?",opts:["Фосфоглюкомутазы.","Фосфоглюкоизомеразы.","Глюкозо-6-фосфатазы.","Фосфофруктокиназы-1."],correct:[3]},
+                    {id:"10.49",q:"Укажите аллостерический ингибитор гексокиназы.",opts:["Глюкозо-1-фосфат.","Глюкозо-6-фосфат.","Фруктозо-6-фосфат.","Рибозо-5-фосфат."],correct:[1]},
+                    {id:"10.50",q:"Укажите фермент, катализирующий первую реакцию субстратного фосфорилирования в процессе гликолиза.",opts:["Фосфофруктокиназа-1.","Гексокиназа.","Фосфоглицераткиназа.","Пируваткиназа."],correct:[2]},
+                    {id:"10.51",q:"Укажите кофермент, который используется в процессе гликолиза для гликолитической оксидоредукции.",opts:["НАД+","ФАД.","ФМН.","ТПФ."],correct:[0]},
+                    {id:"10.52",q:"Известно, что в зрелых эритроцитах нет митохондрий. В какое соединение превращается пируват в эритроцитах?",opts:["В ацетил-SКоА.","В углекислый газ и воду.","В цитрат.","В лактат."],correct:[3]},
+                    {id:"10.53",q:"Укажите реакции субстратного фосфорилирования.",opts:["Фосфофруктокиназная и альдолазная.","Фосфоглицераткиназная и пируваткиназная.","Гексокиназная и пируваткиназная.","Гексокиназная и лактатдегидрогеназная."],correct:[1]},
+                    {id:"10.54",q:"К какому классу относится фермент гликолиза альдолаза?",opts:["Оксидоредуктазы.","Лиазы.","Синтетазы.","Трансферазы."],correct:[1]},
+                    {id:"10.55",q:"Какое соединение может образоваться из глюкозо-6-фосфата в одну стадию?",opts:["Фруктозо-6-фосфат.","Лактат.","Пируват.","Глицеральдегид-3-фосфат."],correct:[0]},
+                    {id:"10.56",q:"Каким образом в реакции с участием фосфоглицераткиназы образуется АТФ?",opts:["В ходе окислительного фосфорилирования.","В ходе субстратного фосфорилирования.","В ходе окислительного декарбоксилирования.","В ходе фосфоролиза."],correct:[1]},
+                    {id:"10.57",q:"Выберите фермент, катализирующий реакцию, которая сопровождается субстратным фосфорилированием.",opts:["Гексокиназа","Цитратсинтаза.","Фумараза.","Пируваткиназа."],correct:[3]},
+                    {id:"10.58",q:"Выберите фермент, отсутствующий в мышечных клетках.",opts:["Гексокиназа.","Пируваткиназа.","Фосфорилаза.","Глюкокиназа."],correct:[3]},
+                    {id:"10.59",q:"В какое соединение превращается пируват, образующийся в мышце во время энергичной тренировки?",opts:["В ацетат.","В лактат.","В глюкозу.","В ацетил-SKoA."],correct:[1]},
+                    {id:"10.60",q:"Выберите верное утверждение.",opts:["Гликолиз происходит в цитоплазме.","Гликолиз происходит в митохондрии.","Гликолиз происходит частично в цитоплазме, частично в митохондрии.","Гликолиз происходит в межклеточном пространстве."],correct:[0]},
+                    {id:"10.61",q:"Выберите верное утверждение.",opts:["Ферменты гликолиза находятся в ЭПР.","Ферменты гликолиза находятся в цитоплазме.","Ферменты гликолиза находятся в митохондриях.","Ферменты гликолиза находятся в лизосомах."],correct:[1]},
+                    {id:"10.62",q:"Выберите верное утверждение.",opts:["Анаэробный гликолиз в клетке протекает в протеасомах.","Анаэробный гликолиз в клетке протекает в митохондриях.","Анаэробный гликолиз в клетке протекает в цитоплазме.","Анаэробный гликолиз в клетке протекает в аппарате Гольджи."],correct:[2]},
+                    {id:"10.63",q:"Каков максимально возможный выход молекул АТФ при окислении... глюкозы до пирувата в отсутствие окислительного фосфорилирования?",opts:["2 молекулы АТФ.","2.5 молекулы АТФ.","7 молекул АТФ.","12 молекул АТФ."],correct:[0]},
+                    {id:"10.64",q:"При каком процессе происходит распад глюкозы до лактата?",opts:["Аэробный гликолиз.","Окислительное декарбоксилирование пирувата.","Глюконеогенез.","Анаэробный гликолиз."],correct:[3]},
+                    {id:"10.65",q:"При каком процессе происходит распад глюкозы до пирувата?",opts:["Аэробный гликолиз.","Окислительное декарбоксилирование пирувата.","Глюконеогенез.","Анаэробный гликолиз."],correct:[0]},
+                    {id:"10.66",q:"Какие изоферменты ЛДГ преимущественно содержатся в гепатоцитах?",opts:["ЛДГ1 и ЛДГ2.","ЛДГ2 и ЛДГЗ.","ЛДГЗ и ЛДГ4.","ЛДГ4 и ЛДГ5."],correct:[3]},
+                    {id:"10.67",q:"Какие изоферменты ЛДГ преимущественно содержатся в клетках миокарда?",opts:["ЛДГ1 и ЛДГ2.","ЛДГ2 и ЛДГЗ.","ЛДГЗ и ЛДГ4.","ЛДГ4 и ЛДГ5."],correct:[0]},
+                    {id:"10.68",q:"Какие коферменты участвуют в гликолизе?",opts:["ФАД И ФАДН2.","ТПФ и HSKoA.","ТГБП и ДГБП.","НАД+ И НАДН(Н+)."],correct:[3]},
+                    {id:"10.69",q:"В каких органах человека условия обмена анаэробные?",opts:["В почках.","В селезёнке.","В дистальном отделе кишечника.","В мозге."],correct:[2]},
+                    {id:"10.70",q:"Что образуется, если к раствору глюкозы добавить АТФ?",opts:["Глюкозо-1-фосфат.","Глюкозо-6-фосфат.","Фруктозо-6-фосфат.","Ничего не образуется."],correct:[3]},
+                    {id:"10.71",q:"Что образуется, если к раствору глюкозы добавить гексокиназу?",opts:["Ничего не образуется.","Глюкозо-1-фосфат.","Глюкозо-6-фосфат.","Фруктозо-6-фосфат."],correct:[0]},
+                    {id:"10.72",q:"При образовании триозофосфатов в процессе гликолиза происходит разрыв связи между ... В каких положениях ...?",opts:["1 и 2.","2 и 3.","3 и 4.","4 и 5."],correct:[2]},
+                    {id:"10.73",q:"К чему приведёт нарушение регуляции активности фосфофруктокиназы-1 в жировой ткани цитратом?",opts:["К гипогликемии.","К гипергликемии.","К мышечной слабости.","К ожирению."],correct:[3]},
+                    {id:"10.74",q:"Укажите фосфорилированные углеводы в гликолизе.",opts:["Глицеральдегид-3-фосфат и диоксиацетонфосфат.","2-Фосфоглицерат и 3-фосфоглицерат.","Фосфоенолпируват и пируват.","Глицеральдегид-3-фосфат и фосфоенолпируват."],correct:[0]},
+                    {id:"10.75",q:"Какие ферменты катализируют необратимые реакции гликолиза?",opts:["Гексокиназа, фосфоглицераткиназа, енолаза.","Альдолаза А, фосфоглицераткиназа, пируваткиназа.","Гексокиназа, фосфофруктокиназа-1, пируваткиназа.","Фосфофруктокиназа-1, енолаза, лактатдегидрогеназа."],correct:[2]}
+                ]
+            },
+            s11: {
+                name: "ЦТК и Окисл. декарбокс. пирувата",
+                questions: [
+                    {id:"11.1",q:"Выберите верное утверждение.",opts:["Окислительное декарбоксилирование пирувата происходит в цитоплазме.","Окислительное декарбоксилирование пирувата происходит в митохондрии.","Окислительное декарбоксилирование пирувата происходит частично в цитоплазме, частично в митохондрии.","Окислительное декарбоксилирование пирувата происходит в межклеточном пространстве."],correct:[1]},
+                    {id:"11.2",q:"Какой фермент катализирует превращение пирувата в ацетил-SКоA?",opts:["Пируваткиназа.","Пируватдегидрогеназный комплекс.","Пируваткарбоксилаза.","Цитратсинтаза."],correct:[1]},
+                    {id:"11.3",q:"В какое соединение превращается пируват под действием пируватдегидрогеназного комплекса в аэробных условиях?",opts:["Фосфоенолпируват.","Ацетил-SKoA.","Лактат.","Глицеральдегид-3-фосфат."],correct:[1]},
+                    {id:"11.4",q:"Какой конечный продукт синтезируется при окислительном декарбоксилировании пирувата?",opts:["Цитрат.","Кетоглутарат.","Пропионат.","Ацетил-SKoA."],correct:[3]},
+                    {id:"11.5",q:"Какую реакцию катализирует пируватдегидрогеназный комплекс?",opts:["Превращения пирувата в ацетил-SКоА.","Превращения пирувата в оксалоацетат.","Превращения пирувата в лактат.","Превращения пирувата в глюкозу."],correct:[0]},
+                    {id:"11.6",q:"Укажите полный набор коферментов, участвующих в работе пируватдегидрогеназного комплекса.",opts:["ФМН, HSKoA, ТПФ,","ТПФ, липоевая кислота, HSKоА, ФАД, НАД+.","ТПФ, липоевая кислота, ФМН.","ТПФ, липоевая кислота, НАДФ+."],correct:[1]},
+                    {id:"11.7",q:"Выберите витамин-предшественник первого кофермента пируватдегидрогеназного комплекса.",opts:["Тиамин.","Пиридоксин.","Ретинол.","Токоферол."],correct:[0]},
+                    {id:"11.8",q:"Выберите витамин-предшественник кофермента пируватдегидрогеназного комплекса.",opts:["Никотиновая кислота.","Аскорбиновая кислота.","Фолиевая кислота.","Менахинон."],correct:[0]},
+                    {id:"11.9",q:"Выберите витамин-предшественник кофермента пируватдегидрогеназного комплекса.",opts:["Рибофлавин.","Пиридоксин.","Кобаламин.","Фолиевая кислота."],correct:[0]},
+                    {id:"11.10",q:"Выберите кофермент пируватдегидрогеназного комплекса.",opts:["Липоевая кислота.","Аскорбиновая кислота.","Холекальциферол.","Фолиевая кислота."],correct:[0]},
+                    {id:"11.11",q:"Выберите витамин-предшественник кофермента пируватдегидрогеназного комплекса.",opts:["Пантотеновая кислота.","Аскорбиновая кислота.","Холекальциферол.","Фолиевая кислота."],correct:[0]},
+                    {id:"11.12",q:"Выберите верное утверждение.",opts:["Пируватдегидрогеназный комплекс активируется НАДН(Н+).","Пируватдегидрогеназный комплекс ингибируется НАДН(H+).","Пируватдегидрогеназный комплекс активируется АТФ.","Пируватдегидрогеназный комплекс ингибируется НАД+."],correct:[1]},
+                    {id:"11.13",q:"При недостатке какого витамина в крови увеличивается количество пировиноградной кислоты?",opts:["Ретинола.","Аскорбиновой кислоты.","Холекальциферола.","Тиамина."],correct:[3]},
+                    {id:"11.14",q:"Выберите верное утверждение.",opts:["Пируваткарбоксилаза активируется ацетил-SКоА.","Пируваткарбоксилаза ингибируется ацетил-SКоА.","Пируваткарбоксилаза активируется АДФ.","Пируваткарбоксилаза ингибируется цитратом."],correct:[0]},
+                    {id:"11.15",q:"Липоевая кислота... Наличие какой функциональной группы позволяет липоевой кислоте связываться с лизином?",opts:["Гидроксильной группы.","Аминогруппы.","Тиольной группы.","Карбоксильной группы."],correct:[3]},
+                    {id:"11.16",q:"Укажите активатор окислительного декарбоксилирования пирувата.",opts:["АДФ.","АТФ.","Глюкоза.","НАДН(Н+)."],correct:[0]},
+                    {id:"11.17",q:"Укажите аллостерический ингибитор пируватдегидрогеназного комплекса.",opts:["Ацетил-КоА.","НАД+.","Цитрат.","АМФ."],correct:[0]},
+                    {id:"11.18",q:"Укажите ингибитор пируватдегидрогеназного комплекса.",opts:["Инсулин.","Ацетил-SКоА.","АДФ.","СТГ."],correct:[1]},
+                    {id:"11.19",q:"Укажите ингибитор пируватдегидрогеназного комплекса.",opts:["Инсулин.","СТГ.","АДФ.","НАДН(Н+)."],correct:[3]},
+                    {id:"11.20",q:"Какие соединения являются продуктами окислительного декарбоксилирования пирувата?",opts:["ФАДН2, вода, углекислый газ.","Сукцинил-SKoA, углекислый газ, НАДН(Н+).","Ацетил-SКоА, углекислый газ, НАДН(Н+).","Малонил-SКоА, НАДН(Н+), вода."],correct:[2]},
+                    {id:"11.21",q:"Выберите кофермент окислительного декарбоксилирования пирувата.",opts:["ФАД.","НАДФ+","Пиридоксальфосфат.","ТГФК."],correct:[0]},
+                    {id:"11.22",q:"Выберите кофермент окислительного декарбоксилирования пирувата.",opts:["HSKoA.","НАДФ+","Пиридоксальфосфат.","ТГФК."],correct:[0]},
+                    {id:"11.23",q:"Выберите кофермент окислительного декарбоксилирования пирувата.",opts:["ТПФ.","НАДФ+","Пиридоксальфосфат.","ТГФК."],correct:[0]},
+                    {id:"11.24",q:"Выберите кофермент окислительного декарбоксилирования пирувата.",opts:["НАД+","НАДФ+","Пиридоксальфосфат.","ТГФК."],correct:[0]},
+                    {id:"11.25",q:"Какое соединение может образовываться из пирувата в одну стадию?",opts:["Лактат.","Цитрат.","Изоцитрат.","Сукцинил-SKoA."],correct:[0]},
+                    {id:"11.26",q:"Какое соединение может образовываться из пирувата в одну стадию?",opts:["Цитрат.","Ацетил-SKoA.","Глицерол.","Сукцинил-SКоА."],correct:[1]},
+                    {id:"11.27",q:"Какое соединение может образовываться из пирувата в одну стадию?",opts:["Цитрат.","Оксалоацетат.","Глицерол.","Изоцитрат."],correct:[1]},
+                    {id:"11.28",q:"Сколько молекул АТФ может синтезироваться при... пирувата... с окислительным фосфорилированием?",opts:["12 молекул АТФ.","2,5 молекулы АТФ.","6 молекул АТФ.","9 молекул АТФ."],correct:[1]},
+                    {id:"11.29",q:"Какое количество молекул АТФ может образоваться при окислительном декарбоксилировании одной молекулы пирувата?",opts:["1,5.","2.","2,5.","3."],correct:[2]},
+                    {id:"11.30",q:"Сколько молекул АТФ может максимально образоваться при полном окислении... двух молекул пирувата?",opts:["24.","25.","38.","72."],correct:[1]},
+                    {id:"11.31",q:"Сколько молекул АТФ может максимально образоваться при полном окислении... 1 молекулы ацетил-КоА?",opts:["24.","10.","38.","15."],correct:[1]},
+                    {id:"11.32",q:"Выберите верное утверждение.",opts:["Реакции ЦТК протекают в цитоплазме.","Реакции ЦТК протекают в митохондрии.","Реакции ЦТК протекают частично в цитоплазме, частично в митохондрии.","Реакции ЦТК протекают в межклеточном пространстве."],correct:[1]},
+                    {id:"11.33",q:"Какой фермент катализирует превращение оксалоацетата в цитрат?",opts:["Цитратсинтаза.","Изоцитратдегидрогеназа.","а-Кетоглутаратдегидрогеназный комплекс.","Пируватдегидрогеназа."],correct:[0]},
+                    {id:"11.34",q:"Какой фермент катализирует превращение цитрата в изоцитрат?",opts:["Цитратсинтаза.","Аконитаза.","Изоцитратдегидрогеназа.","Пируватдегидрогеназа."],correct:[1]},
+                    {id:"11.35",q:"Какой фермент катализирует превращение изоцитрата в а-кетоглутарат?",opts:["Аконитаза.","Изоцитратдегидрогеназа.","а-Кетоглутаратдегидрогеназный комплекс.","Пируватдегидрогеназа."],correct:[1]},
+                    {id:"11.36",q:"Какой фермент катализирует превращение а-кетоглутарата в сукцинил-SКоА?",opts:["Цитратсинтаза.","Аконитаза.","а-Кетоглутаратдегидрогеназный комплекс.","Пируватдегидрогеназа."],correct:[2]},
+                    {id:"11.37",q:"Какой фермент катализирует превращение сукцинил-SКоА в сукцинат?",opts:["Сукцинаттиокиназа.","Изоцитратдегидрогеназа.","Сукцинил-SКоА-синтетаза","Малатдегидрогеназа."],correct:[0, 2]},
+                    {id:"11.38",q:"Какой фермент катализирует превращение сукцината в фумарат?",opts:["Сукцинаттиокиназа.","Изоцитратдегидрогеназа.","Сукцинатдегидрогеназа.","Малатдегидрогеназа."],correct:[2]},
+                    {id:"11.39",q:"Выберите верное утверждение.",opts:["Сукцинатдегидрогеназа катализирует реакцию образования оксалоацетата.","Сукцинатдегидрогеназа использует кофермент НАД+.","Сукцинатдегидрогеназа участвует в пентозофосфатном пути...","Сукцинатдегидрогеназа использует кофермент ФАД."],correct:[3]},
+                    {id:"11.40",q:"Выберите верное утверждение.",opts:["Сукцинатдегидрогеназа катализирует реакцию образования сукцинил-SКоA.","Сукцинатдегидрогеназа использует кофермент НАД+.","Сукцинатдегидрогеназа катализирует реакцию образования фумарата.","Сукцинатдегидрогеназа катализирует реакцию образования малата."],correct:[2]},
+                    {id:"11.41",q:"Какой фермент катализирует превращение фумарата в малат?",opts:["Сукцинаттиокиназа.","Изоцитратдегидрогеназа.","Фумараза.","Малатдегидрогеназа."],correct:[2]},
+                    {id:"11.42",q:"Какой фермент катализирует превращение малата в оксалоацетат?",opts:["Фумараза.","Изоцитратдегидрогеназа.","Сукцинатдегидрогеназа.","Малатдегидрогеназа."],correct:[3]},
+                    {id:"11.43",q:"Какой фермент катализирует реакцию ЦТК, протекающую с образованием Е-ФАДН2?",opts:["Цитратсинтаза.","Малатдегидрогеназа.","Сукцинатдегидрогеназа.","Фумараза."],correct:[2]},
+                    {id:"11.44",q:"Выберите ФАД-зависимый фермент.",opts:["6-Фосфоглюконатдегидрогеназа.","Лактатдегидрогеназа.","Сукцинатдегидрогеназа.","Малатдегидрогеназа."],correct:[2]},
+                    {id:"11.45",q:"Выберите НАД-зависимый фермент.",opts:["6-Фосфоглюконатдегидрогеназа.","Глюкозо-6-фосфатдегидрогеназа.","Сукцинатдегидрогеназа.","Малатдегидрогеназа."],correct:[3]},
+                    {id:"11.46",q:"Какое соединение образуется в ходе реакции ЦТК... а-кетоглутаратдегидрогеназный комплекс?",opts:["Образуется НАДН(Н+).","Образуется ФАДН2.","Образуется АТФ.","Образуется НАД+."],correct:[0]},
+                    {id:"11.47",q:"Какое соединение образуется в ходе реакции ЦТК... сукцинатдегидрогеназа?",opts:["Образуется НАДН(Н+).","Образуется ФАДН2.","Образуется АТФ.","Образуется ФМН."],correct:[1]},
+                    {id:"11.48",q:"В каком случае ускоряются реакции общих путей катаболизма?",opts:["При снижении содержания в клетке ионов кальция.","При снижении содержания в клетке АДФ.","При снижении соотношения НАДН(Н+)/НАД+.","При снижении содержания в клетке пирувата."],correct:[2]},
+                    {id:"11.49",q:"Какое соединение является метаболитом ЦТК?",opts:["Глюкоза.","Ацетил-SКоА.","Лактат.","Пируват."],correct:[1]},
+                    {id:"11.50",q:"Какой фермент катализирует реакцию субстратного фосфорилирования в ЦТК?",opts:["Изоцитратдегидрогеназа.","Цитратсинтаза.","Сукцинил-SКоА-синтетаза.","Сукцинатдегидрогеназа."],correct:[2]},
+                    {id:"11.51",q:"Сколько молекул ФАДН2 образуется в одном «обороте» ЦТК?",opts:["1 молекула.","2 молекулы.","3 молекулы.","4 молекулы."],correct:[0]},
+                    {id:"11.52",q:"Сколько молекул CO2 образуется в одном «обороте» ЦТК?",opts:["1 молекула.","2 молекулы.","3 молекулы.","4 молекулы."],correct:[1]},
+                    {id:"11.53",q:"Сколько молекул ГТФ образуется в одном «обороте» ЦТК?",opts:["1 молекула.","2 молекулы.","3 молекулы.","4 молекулы."],correct:[0]},
+                    {id:"11.54",q:"Сколько молекул НАДН(Н+) образуется в одном «обороте» ЦТК?",opts:["1 молекула.","2 молекулы.","3 молекулы.","4 молекулы."],correct:[2]},
+                    {id:"11.55",q:"Сколько молекул HSКоА высвобождается в одном «обороте» ЦТК?",opts:["1 молекула.","2 молекулы.","3 молекулы.","4 молекулы."],correct:[1]},
+                    {id:"11.56",q:"Выберите верное утверждение.",opts:["1 молекула ГТФ является энергетическим эквивалентом 1 молекулы АТФ.","1 молекула ГТФ ... 2 молекул АТФ.","1 молекула ГТФ ... 3 молекул АТФ.","1 молекула ГТФ ... 4 молекул АТФ."],correct:[0]},
+                    {id:"11.57",q:"Выберите верное утверждение.",opts:["При одном «обороте» ЦТК образуются 3 НАДН(Н+), 1 ФАДН2, 1 ГТФ.","При одном «обороте» ЦТК образуются 3 АТФ, 3 НАДН(Н+).","При одном «обороте» ЦТК образуются 3 НАД+, 1 ФАД, 1 АТФ.","При одном «обороте» ЦТК образуются 12 АТФ, НАД+, ФАД."],correct:[0]},
+                    {id:"11.58",q:"Выберите верное утверждение.",opts:["ЦТК имеет энергетическое значение, потому что приводит к образованию H2O.","ЦТК... к образованию CO2.","ЦТК... к образованию восстановительных эквивалентов для ЦПЭ.","ЦТК... к образованию метаболитов для синтеза..."],correct:[2]},
+                    {id:"11.59",q:"Где локализованы НАД-зависимые дегидрогеназы митохондрии?",opts:["В матриксе митохондрии.","Во внутренней мембране митохондрии.","В межмембранном пространстве.","Во внешней мембране митохондрии."],correct:[0]},
+                    {id:"11.60",q:"Укажите кофермент малатдегидрогеназы.",opts:["ФМН.","НАДФН(Н+).","ТПФ.","НАД+."],correct:[3]},
+                    {id:"11.61",q:"Укажите кофермент сукцинатдегидрогеназы.",opts:["ФАД.","ФМН.","НАДФН(Н+).","ТПФ."],correct:[0]},
+                    {id:"11.62",q:"Выберите верное утверждение.",opts:["Цитратсинтаза активируется инсулином.","Цитратсинтаза ингибируется инсулином.","Цитратсинтаза ингибируется ацетил-SКоА.","Цитратсинтаза активируется цитратом."],correct:[0]},
+                    {id:"11.63",q:"Выберите верное утверждение.",opts:["Цитратсинтаза активируется цитратом.","Цитратсинтаза ингибируется цитратом.","Цитратсинтаза активируется АТФ.","Цитратсинтаза ингибируется инсулином."],correct:[1]},
+                    {id:"11.64",q:"Выберите верное утверждение.",opts:["Цитратсинтаза активируется АТФ.","Цитратсинтаза ингибируется АТФ.","Цитратсинтаза ингибируется инсулином.","Цитратсинтаза активируется цитратом."],correct:[1]},
+                    {id:"11.65",q:"Выберите верное утверждение.",opts:["Цитратсинтаза активируется НАДН(Н+).","Цитратсинтаза ингибируется НАДН(Н+).","Цитратсинтаза активируется цитратом.","Цитратсинтаза ингибируется инсулином."],correct:[1]},
+                    {id:"11.66",q:"Выберите аллостерический фермент ЦТК.",opts:["Аконитаза.","Фумараза.","Сукцинатдегидрогеназа.","Изоцитратдегидрогеназа."],correct:[3]},
+                    {id:"11.67",q:"Выберите ингибитор изоцитратдегидрогеназы.",opts:["АТФ.","Цитрат.","Оксалоацетат.","Ацетил-SКоА."],correct:[0]},
+                    {id:"11.68",q:"Активность какого фермента ЦТК снижается под влиянием АТФ?",opts:["Малатдегидрогеназы.","Аконитазы.","Изоцитратдегидрогеназы.","Сукцинатдегидрогеназы."],correct:[2]},
+                    {id:"11.69",q:"Какой фермент катализирует скорость-лимитирующую реакцию ЦТК?",opts:["Малатдегидрогеназа.","Фумараза.","Изоцитратдегидрогеназа.","Аконитаза."],correct:[2]},
+                    {id:"11.70",q:"Какой фермент катализирует реакцию ЦТК, протекающую с образованием ФАДН2?",opts:["Цитратсинтаза.","Малатдегидрогеназа.","Сукцинатдегидрогеназа.","Фумараза."],correct:[2]},
+                    {id:"11.71",q:"К какому классу ферментов относится аконитаза?",opts:["Изомеразы.","Лиазы.","Трансферазы.","Лигазы."],correct:[0]},
+                    {id:"11.72",q:"Выберите фермент ЦТК, катализирующий окислительно-восстановительную реакцию, сопряжённую с процессом окислительного фосфорилирования АДФ.",opts:["Малатдегидрогеназа.","Цитратсинтаза.","Фумараза.","Сукцинил-SКоА-синтетаза."],correct:[0]},
+                    {id:"11.73",q:"Выберите фермент ЦТК, катализирующий окислительно-восстановительную реакцию, сопряжённую с процессом окислительного фосфорилирования АДФ.",opts:["Изоцитратдегидрогеназа.","Цитратсинтаза.","Фумараза.","Сукцинил-SКоА-синтетаза."],correct:[0]},
+                    {id:"11.74",q:"Выберите фермент ЦТК, катализирующий окислительно-восстановительную реакцию, сопряжённую с процессом окислительного фосфорилирования АДФ.",opts:["а-Кетоглутаратдегидрогеназный комплекс.","Цитратсинтаза.","Фумараза.","Сукцинил-SКоА-синтетаза."],correct:[0]},
+                    {id:"11.75",q:"Какой фермент катализирует реакцию ЦТК, сопровождающуюся образованием НАДН(Н+)?",opts:["Сукцинатдегидрогеназа.","Цитратсинтаза.","Фумараза.","Малатдегидрогеназа."],correct:[3]},
+                    {id:"11.76",q:"Какой фермент катализирует реакцию, сопровождающуюся образованием НАДН(Н+)?",opts:["Сукцинатдегидрогеназа.","Цитратсинтаза.","Фумараза.","Изоцитратдегидрогеназа."],correct:[3]},
+                    {id:"11.77",q:"Выберите регуляторный фермент ЦТК.",opts:["Аконитаза.","Цитратсинтаза.","Фумараза.","Сукцинатдегидрогеназа."],correct:[1]},
+                    {id:"11.78",q:"Какой кофермент входит одновременно в состав пируватдегидрогеназного и а-кетоглутаратдегидрогеназного комплексов?",opts:["НАДФ+(Н+).","Пиридоксальфосфат.","HSKoA.","ТГФК."],correct:[2]},
+                    {id:"11.79",q:"Выберите соединение, которое относится к макроэргическим.",opts:["АМФ.","Ацетил-SКоА.","Ацетоацетат.","ГМФ."],correct:[1]},
+                    {id:"11.80",q:"Выберите соединение, которое относится к макроэргическим.",opts:["Сукцинил-SKoA.","Сукцинат.","Ацетоацетат.","ГМФ."],correct:[0]},
+                    {id:"11.81",q:"Выберите соединение, которое относится к макроэргическим.",opts:["АТФ.","ГМФ.","Сукцинат.","АМФ."],correct:[0]},
+                    {id:"11.82",q:"Выберите верное утверждение.",opts:["Субстратное фосфорилирование происходит при синтезе гликогена.","...происходит в глюконеогенезе.","...происходит в пентозофосфатном пути...","Субстратное фосфорилирование происходит в ЦТК."],correct:[3]},
+                    {id:"11.83",q:"Каков максимальный энергетический эффект окисления до CO2 и воды в аэробных условиях одной молекулы глюкозы?",opts:["2 молекулы АТФ.","12 молекул АТФ.","32 молекулы АТФ.","39 молекул АТФ."],correct:[2]},
+                    {id:"11.84",q:"Каков энергетический эффект окисления одной молекулы ацетил-SКоА... в ЦТК в отсутствие окислительного фосфорилирования?",opts:["2 молекулы АТФ.","12 молекул АТФ.","32 молекулы АТФ.","1 молекула АТФ."],correct:[3]},
+                    {id:"11.85",q:"Каков энергетический эффект реакции превращения изоцитрата в а-кетоглутарат...?",opts:["2 молекулы АТФ.","1,5 молекулы АТФ.","5 молекул АТФ.","2,5 молекулы АТФ."],correct:[3]},
+                    {id:"11.86",q:"Каков энергетический эффект реакции превращения а-кетоглутарата в сукцинил-SКоА...?",opts:["2 молекулы АТФ.","1,5 молекулы АТФ.","5 молекул АТФ.","2,5 молекулы АТФ."],correct:[3]},
+                    {id:"11.87",q:"Каков энергетический эффект реакции превращения сукцината в фумарат...?",opts:["2 молекулы АТФ.","1,5 молекулы АТФ.","5 молекул АТФ.","2,5 молекулы АТФ."],correct:[1]},
+                    {id:"11.88",q:"Каков энергетический эффект реакции превращения малата в оксалоацетат...?",opts:["2 молекулы АТФ.","1,5 молекулы АТФ.","5 молекул АТФ.","2,5 молекулы АТФ."],correct:[3]},
+                    {id:"11.89",q:"Каков энергетический эффект окисления одной молекулы глюкозы до CO2 и воды в отсутствие окислительного фосфорилирования?",opts:["6 молекул АТФ.","12 молекул АТФ.","10 молекул АТФ.","32 молекулы АТФ."],correct:[0]},
+                    {id:"11.90",q:"Каков энергетический эффект реакции превращения сукцинил-SКоА в сукцинат...?",opts:["1 молекула ГТФ (+1 АТФ).","1 молекула НАДН(Н+) (+2,5 АТФ).","1 молекула ФАДН2 (+1,5 АТФ).","1 молекула НАДН(Н+) (+1,5 АТФ)."],correct:[0]},
+                    {id:"11.91",q:"Каков энергетический эффект реакции превращения пирувата в ацетил-SКоА в отсутствие окислительного фосфорилирования?",opts:["3 молекулы АТФ.","2,5 молекулы АТФ.","0 молекул АТФ.","1,5 молекулы АТФ."],correct:[2]},
+                    {id:"11.92",q:"Каков энергетический эффект окисления одной молекулы пирувата до СО2 и воды в отсутствие окислительного фосфорилирования?",opts:["2 молекулы АТФ.","12 молекул АТФ.","32 молекулы АТФ.","1 молекула АТФ."],correct:[3]},
+                    {id:"11.93",q:"Что изменяется при повышении соотношения АТФ/АДФ в мышечной клетке?",opts:["Активность ферментов ЦТК повышается.","Активность ферментов ЦТК снижается.","Повышается концентрация цАМФ.","Активность ЦПЭ повышается."],correct:[1]}
+                ]
+            },
+            s12: {
+                name: "Цепь переноса электронов",
+                questions: [
+                    {id:"12.1",q:"Выберите I комплекс ЦПЭ.",opts:["НАДН-КоQ оксидоредуктаза.","Сукцинатдегидрогеназа.","Цитохром с.","АТФ-синтаза."],correct:[0]},
+                    {id:"12.2",q:"Выберите II комплекс ЦПЭ.",opts:["НАДН-КоQ оксидоредуктаза.","Сукцинатдегидрогеназа.","Цитохром с.","АТФ-синтаза."],correct:[1]},
+                    {id:"12.3",q:"Выберите IV комплекс ЦПЭ.",opts:["НАДН-КоQ оксидоредуктаза.","Сукцинатдегидрогеназа.","АТФ-синтаза.","Цитохром с-оксидаза."],correct:[3]},
+                    {id:"12.4",q:"Выберите верное утверждение.",opts:["Кофермент Q в ЦПЭ переносит электроны между комплексом I и комплексом II.","Кофермент Q в ЦПЭ переносит электроны между комплексом I и комплексом III.","Кофермент Q в ЦПЭ переносит электроны между комплексом II и комплексом IV.","Кофермент Q в ЦПЭ переносит электроны между комплексом II и комплексом IV."],correct:[1]},
+                    {id:"12.5",q:"Выберите верное утверждение.",opts:["Кофермент Q в ЦПЭ переносит электроны между комплексом I и комплексом II.","Кофермент Q в ЦПЭ переносит электроны между комплексом II и комплексом III.","Кофермент Q в ЦПЭ переносит электроны между комплексом II и комплексом IV.","Кофермент Q в ЦПЭ переносит электроны между комплексом I и комплексом IV."],correct:[1]},
+                    {id:"12.6",q:"Выберите верное утверждение.",opts:["Цитохром с в ЦПЭ переносит электроны между комплексом I и комплексом II.","Цитохром с в ЦПЭ переносит электроны между комплексом II и комплексом III.","Цитохром с в ЦПЭ переносит электроны между комплексом III и комплексом IV.","Цитохром с в ЦПЭ переносит электроны между комплексом I и комплексом IV."],correct:[2]},
+                    {id:"12.7",q:"Выберите верное утверждение.",opts:["1 молекула НАДН(Н+) ... 1 молекулы АТФ.","1 молекула НАДН(Н+) ... 1,5 молекул АТФ.","1 молекула НАДН(Н+) ... 2,5 молекул АТФ.","1 молекула НАДН(Н+) ... 4 молекул АТФ."],correct:[2]},
+                    {id:"12.8",q:"Выберите верное утверждение.",opts:["1 молекула ФАДН2 ... 1 молекулы АТФ.","1 молекула ФАДН2 ... 1,5 молекул АТФ.","1 молекула ФАДН2 ... 3 молекул АТФ.","1 молекула ФАДН2 ... 4 молекул АТФ."],correct:[1]},
+                    {id:"12.9",q:"Какое из нижеперечисленных соединений не является ферментом?",opts:["Катепсин.","Химотрипсин.","Цитохром с.","Убихинон."],correct:[3]},
+                    {id:"12.10",q:"Какие сложные белки осуществляют перенос электронов в дыхательной цепи?",opts:["Гликопротеины.","Гемопротеины.","Фосфопротеины.","Нуклеопротеины."],correct:[1]},
+                    {id:"12.11",q:"Каков выход АТФ в ЦТК... в отсутствие окислительного фосфорилирования?",opts:["38.","12.","6.","1."],correct:[3]},
+                    {id:"12.12",q:"Что такое окислительное фосфорилирование?",opts:["Образование АТФ за счёт энергии макроэргических субстратов.","Образование АТФ, не требующее расхода кислорода.","Образование АТФ, сопряжённое с переносом электронов и протонов в ЦПЭ.","Протеинкиназная реакция."],correct:[2]},
+                    {id:"12.13",q:"Укажите фермент, который осуществляет перенос электронов непосредственно на кислород.",opts:["АТФ-синтаза.","Супероксиддисмутаза.","Пероксидаза.","Цитохром с-оксидаза."],correct:[3]},
+                    {id:"12.14",q:"Где локализуются ферменты окислительного фосфорилирования?",opts:["В матриксе митохондрий.","На внутренней мембране митохондрий.","В межмембранном пространстве.","На внешней мембране митохондрий."],correct:[1]},
+                    {id:"12.15",q:"Каким способом достигается разобщение дыхания и фосфорилирования?",opts:["При снижении активности Н+-зависимой АТФазы.","При ингибировании АДФ/АТФ транслоказы.","При повышении проницаемости внутренней мембраны митохондрий для протонов.","При увеличении активности малат-аспартатного челночного механизма."],correct:[2]},
+                    {id:"12.16",q:"Что является движущей силой переноса протонов и электронов по ЦПЭ?",opts:["Изменение электрохимического потенциала.","Изменение окислительно-восстановительного потенциала.","Изменение градиента концентрации Ca2+.","Изменение градиента концентрации Na+."],correct:[1]},
+                    {id:"12.17",q:"Какой компонент ЦПЭ свободно перемещается в липидном бислое мембраны?",opts:["НАДН-КоQ оксидоредуктаза.","Цитохромоксидаза.","Убихинон.","Сукцинатдегидрогеназа."],correct:[2]},
+                    {id:"12.18",q:"Где локализована НАДН-дегидрогеназа?",opts:["В матриксе митохондрий.","Во внутренней мембране митохондрий.","На внешней мембране митохондрий.","В цитозоле."],correct:[1]},
+                    {id:"12.19",q:"Что служит акцептором электронов от флавиновых ферментов в ЦПЭ?",opts:["Убихинон.","Цитохром b.","Цитохром с.","Кислород."],correct:[0]},
+                    {id:"12.20",q:"Чем обусловлен порядок расположения переносчиков электронов в ЦПЭ?",opts:["Строением небелковой части.","Расположением по отношению к мембране митохондрии.","Суммарным зарядом аминокислотных остатков...","Окислительно-восстановительным потенциалом."],correct:[3]},
+                    {id:"12.21",q:"К какому классу сложных белков относятся флавопротеины?",opts:["Гликопротеинам.","Липопротеинам.","Металлопротеинам.","Хромопротеинам."],correct:[3]},
+                    {id:"12.22",q:"Выберите верное утверждение.",opts:["Вещества, разобщающие ЦПЭ..., увеличивают синтез АТФ.","Вещества, разобщающие ЦПЭ..., ингибируют ЦПЭ.","Вещества, разобщающие ЦПЭ..., снижают потребление кислорода.","Вещества, разобщающие ЦПЭ..., увеличивают выработку тепла, снижают синтез АТФ..."],correct:[3]},
+                    {id:"12.23",q:"В чём заключается смысл сопряжения ЦПЭ и окислительного фосфорилирования?",opts:["Часть энергии выделяется в виде тепла.","Часть энергии идёт на транспорт ионов.","Часть энергии запасается в виде АТФ.","Часть энергии идёт на транспорт субстратов."],correct:[2]},
+                    {id:"12.24",q:"Выберите верное утверждение.",opts:["Окислительное фосфорилирование АДФ протекает с использованием энергии макроэргических субстратов.","Окислительное фосфорилирование АДФ протекает с использованием энергии электрохимического потенциала.","Окислительное фосфорилирование АДФ протекает с использованием энергии ГТФ.","Окислительное фосфорилирование АДФ протекает с использованием энергии УТФ."],correct:[1]},
+                    {id:"12.25",q:"Выберите верное утверждение.",opts:["Малат-аспартатный челночный механизм энергетически более выгодный...","Малат-аспартатный челночный механизм энергетически менее выгодный...","Малат-аспартатный челночный механизм сравним по энергетическому выходу...","Сравнение этих механизмов по энергическому выходу невозможно."],correct:[0]},
+                    {id:"12.26",q:"Выберите верное утверждение.",opts:["Глицеролфосфатный челночный механизм переносит... в виде НАДН(Н+).","Глицеролфосфатный челночный механизм переносит... в виде ФАДН2.","Глицеролфосфатный челночный механизм переносит... в виде ФМН.","Глицеролфосфатный челночный механизм переносит... в виде НАД+."],correct:[1]},
+                    {id:"12.27",q:"Выберите верное утверждение.",opts:["Малат-аспартатный челночный механизм переносит... в виде НАДН(Н+).","Малат-аспартатный челночный механизм переносит... в виде ФАДН2.","Малат-аспартатный челночный механизм переносит... в виде ФМН.","Малат-аспартатный челночный механизм переносит... в виде НАД+."],correct:[0]},
+                    {id:"12.28",q:"Выберите верное утверждение.",opts:["Глицеролфосфатный челночный механизм энергетически более выгодный...","Глицеролфосфатный челночный механизм энергетически менее выгодный...","Глицеролфосфатный челночный механизм сравним по энергетическому выходу...","Сравнение этих механизмов по энергическому выходу невозможно."],correct:[1]},
+                    {id:"12.29",q:"Какой механизм служит для передачи... НАДН(Н+), образующегося в процессе гликолиза, в митохондрию?",opts:["Карнитиновый.","Цикл Кори.","Малат-аспартатный.","Глюкозоаланиновый."],correct:[2]},
+                    {id:"12.30",q:"Каким способом осуществляется транспорт НАДН(Н+) из цитоплазмы через внутреннюю мембрану митохондрий?",opts:["Путём облегчённой диффузии.","С помощью глицеролфосфатной челночной системы.","Путём простой диффузии.","При участии АТФазы."],correct:[1]},
+                    {id:"12.31",q:"В каких клетках наиболее высока активность глицеролфосфатного челночного механизма?",opts:["В мышечных клетках.","В гепатоцитах.","В клетках кишечника.","В клетках почек."],correct:[0]},
+                    {id:"12.32",q:"Какие соединения являются конечными продуктами катаболизма углеводов?",opts:["Пируват и лактат.","Лактат и CO2.","СО2 и вода.","Вода и CO2."],correct:[3]},
+                    {id:"12.33",q:"Выберите верное утверждение.",opts:["Цитохромы ЦПЭ встроены во внешнюю мембрану митохондрий.","Цитохромы ЦПЭ встроены во внутреннюю мембрану митохондрий.","Цитохромы ЦПЭ выстроены в порядке снижения окислительно-восстановительного потенциала.","Цитохромы ЦПЭ - низкомолекулярные соединения."],correct:[1]},
+                    {id:"12.34",q:"Где протекает процесс окислительного фосфорилирования?",opts:["В цитоплазме.","В митохондрии.","Частично в цитоплазме, частично в митохондрии.","В межклеточном пространстве."],correct:[1]},
+                    {id:"12.35",q:"Как называется процесс, при котором происходит синтез АТФ на внутренней мембране митохондрии?",opts:["Пентозофосфатный путь...","ЦТК.","Субстратное фосфорилирование.","Окислительное фосфорилирование."],correct:[3]},
+                    {id:"12.36",q:"Укажите компонент ЦПЭ... который принимает электроны от разных субстратов окисления.",opts:["НАДН-КоQ оксидоредуктаза.","Убихинон (КoQ).","Цитохром с.","Сукцинатдегидрогеназа."],correct:[1]},
+                    {id:"12.37",q:"В каком процессе регенерируются восстановленные в ЦТК коферменты?",opts:["В гликолизе.","В глюконеогенезе.","В ЦПЭ.","В пентозофосфатном пути..."],correct:[2]},
+                    {id:"12.38",q:"Выберите верное утверждение.",opts:["Энергия ΔμН+ используется для синтеза ЦТФ.","Энергия ΔμН+ используется для синтеза ГТФ.","Энергия ΔμН+ используется для синтеза АТФ.","Энергия ΔμН+ используется для синтеза УТФ."],correct:[2]},
+                    {id:"12.39",q:"Из каких мультиферментных комплексов состоит главная дыхательная цепь?",opts:["Комплексов I, III, IV.","Комплексов II, III, IV.","Комплексов I, II, IV.","Комплексов I, II."],correct:[0]},
+                    {id:"12.40",q:"Укажите субстрат II комплекса ЦПЭ.",opts:["Сукцинат.","Цитрат.","Оксалоацетат.","Малат."],correct:[0]},
+                    {id:"12.41",q:"Выберите верное утверждение.",opts:["ΔμН+ возникает в матриксе митохондрий.","ΔμН+ возникает во внутренней мембране митохондрий.","ΔμН+ возникает в межмембранном пространстве.","ΔμН+ возникает во внешней мембране митохондрий."],correct:[2]},
+                    {id:"12.42",q:"Каков выход АТФ в ЦТК... при наличии окислительного фосфорилирования?",opts:["10.","15.","6.","2."],correct:[0]},
+                    {id:"12.43",q:"Каким ферментом представлен III комплекс ЦПЭ?",opts:["НАДН-КоQ оксидоредуктаза.","Сукцинатдегидрогеназа.","KoQH2-цитохром с оксидоредуктаза.","Цитохром с-оксидаза."],correct:[2]},
+                    {id:"12.44",q:"Каким образом достигается необратимость сопряжённой химической реакции?",opts:["При гидролизе АТФ до АДФ и фосфата.","При гидролизе АТФ до АМФ и пирофосфата.","При гидролизе АТФ до аденина и рибозо-5-фосфата.","При гидролизе АТФ до аденозина и фосфата."],correct:[1]},
+                    {id:"12.45",q:"В чём заключается биологическая роль АТФ/АДФ-транслоказы?",opts:["Позволяет клетке использовать... АТФ в реакциях, протекающих в цитоплазме.","Позволяет клетке использовать... АТФ в ЦТК.","Позволяет клетке использовать... АТФ в реакциях, протекающих в митохондриях.","Позволяет клетке использовать... АДФ в реакциях гликолиза."],correct:[0]},
+                    {id:"12.46",q:"Какой фермент является одновременно ферментом ЦТК и комплексом II ЦПЭ?",opts:["Сукцинатдегидрогеназа.","Малатдегидрогеназа.","Изоцитратдегидрогеназа.","Глицеральдегид-3-фосфатдегидрогеназа."],correct:[0]},
+                    {id:"12.47",q:"Каков энергетический эффект окисления 1 молекулы глюкозы... при использовании глицеролфосфатного челночного механизма...?",opts:["30 молекул АТФ.","12 молекул АТФ.","10 молекул АТФ.","32 молекулы АТФ."],correct:[0]},
+                    {id:"12.48",q:"Каков энергетический эффект окисления 1 молекулы глюкозы... при использовании малат-аспартатного челночного механизма...?",opts:["30 молекул АТФ.","12 молекул АТФ.","10 молекул АТФ.","32 молекулы АТФ."],correct:[3]},
+                    {id:"12.49",q:"С чем связано токсическое действие цианидов?",opts:["С ингибированием I комплекса ЦПЭ.","С ингибированием II комплекса ЦПЭ.","С ингибированием III комплекса ЦПЭ.","С ингибированием IV комплекса ЦПЭ."],correct:[3]},
+                    {id:"12.50",q:"Каким образом избыток йодтиронинов повышает интенсивность основного обмена...?",opts:["...уменьшает градиент рН, что приводит к разобщению...","...ингибирует ферменты ЦПЭ...","...снижает экспрессию генов белков...","...усиливает захват клетками глюкозы..."],correct:[0]},
+                    {id:"12.51",q:"Укажите белок бурой жировой ткани у новорождённых, разобщающий тканевое дыхание...",opts:["Гликогенин.","Термогенин.","Ангиогенин.","Липогенин."],correct:[1]},
+                    {id:"12.52",q:"Выберите верное утверждение.",opts:["Встраивание термогенина увеличивает проницаемость...","Встраивание термогенина уменьшает проницаемость...","Термогенин возвращает протоны из межмембранного пространства в цитоплазму...","Термогенин возвращает протоны из цитоплазмы в межмембранное пространство..."],correct:[0]}
+                ]
+            },
+            s13: {
+                name: "Синтез и распад гликогена",
+                questions: [
+                    {id:"13.1",q:"Какой фермент катализирует превращение глюкозо-1-фосфата в УДФ-глюкозу?",opts:["Глюкокиназа.","Фосфоглюкомутаза.","УДФ-глюкопирофосфорилаза.","Гликозилтрансфераза."],correct:[2]},
+                    {id:"13.2",q:"Какой фермент катализирует реакции наращивания гликозидной цепи гликогена?",opts:["Глюкокиназа.","Фосфоглюкомутаза.","Гликогенсинтаза.","Гликозилтрансфераза."],correct:[2]},
+                    {id:"13.3",q:"Какой фермент катализирует реакцию образования глюкозы из глюкозо-6-фосфата?",opts:["Фосфоглюкомутаза.","Глюкозо-6-фосфатаза.","Гликогенсинтаза.","Гексокиназа."],correct:[1]},
+                    {id:"13.4",q:"Какой фермент участвует в образовании глюкозо-1-фосфата из гликогена?",opts:["Амилаза.","Фосфорилаза а.","Фосфоглюкомутаза.","Глюкокиназа."],correct:[1]},
+                    {id:"13.5",q:"Укажите фермент, отсутствующий в мышцах и головном мозге.",opts:["Глюкозо-6-фосфатаза.","Гексокиназа.","Пируваткарбоксилаза.","Фосфорилаза."],correct:[0]},
+                    {id:"13.6",q:"Укажите первичный продукт расщепления гликогена в мышцах.",opts:["УДФ-глюкоза.","Глюкозо-1-фосфат.","Глюкозо-6-фосфат.","Глюкоза."],correct:[1]},
+                    {id:"13.7",q:"Какое макроэргическое соединение требуется для синтеза гликогена?",opts:["АТФ.","УТФ.","Фосфоенолпируват.","Ацетил-SКоА."],correct:[1]},
+                    {id:"13.8",q:"Выберите фермент, катализирующий распад гликогена.",opts:["Гликогенсинтаза.","Енолаза.","Глюкозооксидаза.","Фосфорилаза а."],correct:[3]},
+                    {id:"13.9",q:"Выберите реакцию, которая может протекать в клетках печени в одну стадию.",opts:["Глюкозо-1-фосфат -> фруктозо-6-фосфат.","Глюкозо-6-фосфат -> глюкоза.","Пируват -> глюкозо-6-фосфат.","Глюкозо-1-фосфат -> гликоген."],correct:[1]},
+                    {id:"13.10",q:"Выберите верное утверждение.",opts:["...образуется... путём окислительного фосфорилирования.","...образуется... путём субстратного фосфорилирования.","...образуется... путём гидролиза.","...образуется... путём фосфоролиза."],correct:[3]},
+                    {id:"13.11",q:"В каких органах биосинтез гликогена протекает наиболее активно?",opts:["В тонкой или толстой кишке.","В печени или мышцах.","В почках или мышцах.","В печени или легких."],correct:[1]},
+                    {id:"13.12",q:"К какому классу ферментов относится глюкозо-6-фосфатаза?",opts:["Гидролазы.","Трансферазы.","Оксидоредуктазы.","Изомеразы."],correct:[0]},
+                    {id:"13.13",q:"Выберите верное утверждение.",opts:["Фосфорилаза а катализирует распад... с образованием глюкозо-6-фосфата.","...с образованием УДФ-глюкозы.","...с образованием свободной глюкозы.","...с образованием глюкозо-1-фосфата."],correct:[3]},
+                    {id:"13.14",q:"Какой фермент отсутствует в клетках мышечной ткани?",opts:["Гексокиназа.","Фосфорилаза.","Глюкозо-6-фосфатаза.","Фосфоглюкомутаза."],correct:[2]},
+                    {id:"13.15",q:"...С отсутствием какого фермента в клетках мышечной ткани это связано?",opts:["Глюкокиназы.","Гликогенфосфорилазы.","Глюкозо-6-фосфатазы.","Фосфофруктокиназы-1."],correct:[2]},
+                    {id:"13.16",q:"Какой нуклеотид является переносчиком гликозильных групп в реакции биосинтеза гликогена?",opts:["АТФ.","АДФ.","ЦДФ.","УДФ."],correct:[3]},
+                    {id:"13.17",q:"Какой фермент участвует в образовании глюкозо-1-фосфата из гликогена?",opts:["Гексокиназа.","Фосфоглюкоизомераза.","Фосфоглюкомутаза.","Фосфорилаза а."],correct:[3]},
+                    {id:"13.18",q:"Какой фермент катализирует распад гликогена?",opts:["Фосфатаза.","Фосфорилаза а.","Транскетолаза.","Альдолаза."],correct:[1]},
+                    {id:"13.19",q:"В каких органах и тканях наблюдается наибольшее содержание (по массе) гликогена...?",opts:["В жировой ткани.","В печени.","В мышцах.","В почках."],correct:[2]},
+                    {id:"13.20",q:"Какой фермент участвует в образовании глюкозо-1-фосфата из гликогена?",opts:["Амилаза.","Фосфоглюкомутаза.","Фосфоглюкоизомераза.","Фосфорилаза а."],correct:[3]},
+                    {id:"13.21",q:"Какой фермент участвует в образовании глюкозо-6-фосфата из глюкозо-1-фосфата?",opts:["Амилаза.","Фосфоглюкомутаза.","Фосфоглюкоизомераза.","Фосфорилаза."],correct:[1]},
+                    {id:"13.22",q:"Какая реакция протекает в мышцах при распаде гликогена?",opts:["Глюкоза -> глюкозо-6-фосфат.","Глюкозо-6-фосфат -> глюкоза.","Глюкозо-6-фосфат -> глюкозо-1-фосфат.","Глюкозо-1-фосфат -> глюкозо-6-фосфат."],correct:[3]},
+                    {id:"13.23",q:"Укажите способ регуляции активности гликогенсинтазы.",opts:["Метилирование/деметилирование.","Сульфатирование/десульфирование.","Фосфорилирование/дефосфорилирование.","Ацилирование/деацилирование."],correct:[2]},
+                    {id:"13.24",q:"Какое соединение может образовываться из глюкозо-6-фосфата в одну стадию?",opts:["Глюкоза.","Лактат.","Диоксиацетонфосфат.","Фруктоза."],correct:[0]},
+                    {id:"13.25",q:"Выберите фермент, отсутствующий в мышечных клетках.",opts:["Гексокиназа.","Пируваткиназа.","Фосфорилаза.","Глюкозо-6-фосфатаза."],correct:[3]},
+                    {id:"13.26",q:"К какой патологии может приводить дефицит глюкозо-6-фосфатазы в печени?",opts:["К накоплению гликогена в печени.","К гипергликемии.","К увеличению количества лактата в крови.","К глюкозурии."],correct:[0]},
+                    {id:"13.27",q:"Укажите локализацию процесса распада гликогена.",opts:["В цитоплазме клетки.","В митохондрии.","Частично в цитоплазме, частично в митохондрии.","В межклеточном пространстве."],correct:[0]},
+                    {id:"13.28",q:"Укажите локализацию процесса синтеза гликогена.",opts:["В цитоплазме клетки.","В митохондрии.","Частично в цитоплазме, частично в митохондрии.","В межклеточном пространстве."],correct:[0]},
+                    {id:"13.29",q:"Каков энергетический эффект окисления до CO2 и воды... одного гликозильного остатка гликогена?",opts:["2 молекулы АТФ.","20 молекул АТФ.","32 молекул АТФ.","33 молекул АТФ."],correct:[3]},
+                    {id:"13.30",q:"Какие связи образуются при полимеризации... под действием гликогенсинтазы?",opts:["а-(1,4) и а-(1,6) связи...","b-(1,6) связи...","а-(1,4) и а-(1,2) связи...","а-(1,4) связи гликозидной цепи."],correct:[3]},
+                    {id:"13.31",q:"Какое минимальное число остатков глюкозы... необходимо для наращивания цепи гликогена?",opts:["2 остатка.","3 остатка.","4 остатка.","5 остатков."],correct:[2]},
+                    {id:"13.32",q:"Сколько субъединиц содержит фосфорилаза а?",opts:["1 субъединицу.","2 субъединицы.","3 субъединицы.","4 субъединицы."],correct:[1]},
+                    {id:"13.33",q:"Сколько молекул АТФ затрачивается на превращение неактивной фосфорилазы b в активную фосфорилазу а?",opts:["1 молекула.","2 молекулы.","3 молекулы.","4 молекулы."],correct:[1]},
+                    {id:"13.34",q:"Сколько молекул АТФ затрачивается на превращение неактивной киназы фосфорилазы b в активную киназу фосфорилазы a?",opts:["1 молекула.","2 молекулы.","3 молекулы.","4 молекулы."],correct:[0]},
+                    {id:"13.35",q:"Сколько молекул АТФ необходимо для образования... глюкозо-1-фосфата?",opts:["1 молекула.","2 молекулы.","3 молекулы.","Необходим неорганический фосфат."],correct:[3]},
+                    {id:"13.36",q:"Что такое гликогенозы?",opts:["Нарушения синтеза глюкозы.","Нарушения всасывания глюкозы.","Нарушения синтеза гликогена.","Накопление в печени гликогена."],correct:[3]},
+                    {id:"13.37",q:"С дефицитом какого фермента в печени связан гликогеноз I типа (болезнь Гирке)?",opts:["Фосфорилазы.","Фосфофруктокиназы-1.","Глюкокиназы.","Глюкозо-6-фосфатазы."],correct:[3]},
+                    {id:"13.38",q:"С дефицитом какого фермента связана болезнь Помпе (гликогеноз II типа)?",opts:["Кислой мальтазы (a-глюкозидазы).","Амило-а-(1,6)-гликозидазы.","Амило а-(1,4)-а-(1,6)-гликозилтрансферазы.","Гликогенфосфорилазы."],correct:[0]},
+                    {id:"13.39",q:"С дефицитом какого фермента связана болезнь Форбса/Кори (гликогеноз III типа)?",opts:["Кислой мальтазы (a-глюкозидазы).","Амило-а-(1,6)-гликозидазы.","Амило а-(1,4)-а-(1,6)-гликозилтрансферазы.","Гликогенфосфорилазы."],correct:[1]},
+                    {id:"13.40",q:"С дефицитом какого фермента связана болезнь Андерсена (гликогеноз IV типа)?",opts:["Кислой мальтазы (a-глюкозидазы).","Амило-а-(1,6)-гликозидазы.","Амило а-(1,4)-а-(1,6)-гликозилтрансферазы.","Гликогенфосфорилазы."],correct:[2]},
+                    {id:"13.41",q:"Гликогеноз какого типа обусловлен образованием патологического неветвящегося гликогена?",opts:["Болезнь Андерсена (гликогеноз IV типа).","Болезнь Помпе (гликогеноз II типа).","Болезнь Мак-Ардля (гликогеноз V типа).","Болезнь Герса (гликогеноз VI типа)."],correct:[0]},
+                    {id:"13.42",q:"Укажите наиболее характерный клинический признак гликогенозов.",opts:["Гепатомегалия вследствие накопления гликогена в печени.","Гипергликемия...","Тошнота и рвота.","Патология органа зрения."],correct:[0]},
+                    {id:"13.43",q:"Укажите тип гликогеноза, связанный с дефектом фермента гликолиза фосфофруктокиназы-1.",opts:["Болезнь Форбса/Кори (гликогеноз III типа).","Болезнь Герса (гликогеноз VI типа).","Болезнь Мак-Ардля (гликогеноз V типа).","Болезнь Таруи (гликогеноз VIII типа)."],correct:[3]},
+                    {id:"13.44",q:"У пациента дефицит гликогенфосфорилазы печени. Как изменится концентрация лактата...?",opts:["Увеличится.","Уменьшится.","Не изменится.","Сначала уменьшится, а потом увеличится."],correct:[0]},
+                    {id:"13.45",q:"У пациента дефицит гликогенфосфорилазы мышц. Как изменится концентрация лактата...?",opts:["Увеличится.","Уменьшится.","Не изменится.","Сначала уменьшится, а потом увеличится."],correct:[1]},
+                    {id:"13.46",q:"У пациента дефицит гликогенфосфорилазы мышц. Как изменится концентрация глюкозы...?",opts:["Увеличится.","Уменьшится.","Не изменится.","Сначала уменьшится, а потом увеличится."],correct:[0]},
+                    {id:"13.47",q:"У пациента дефицит гликогенфосфорилазы печени. Как изменится концентрация глюкозы...?",opts:["Увеличится.","Уменьшится.","Не изменится.","Сначала уменьшится, а потом увеличится."],correct:[1]},
+                    {id:"13.48",q:"Какой фермент ингибируют кофеин, теобромин и теофилин?",opts:["Аденилатциклазу.","Фосфодиэстеразу.","Протеинкиназу А.","Фосфорилазу а."],correct:[1]},
+                    {id:"13.49",q:"Как называется активация... гликогенфосфорилазы и одновременное ингибирование гликогенсинтазы?",opts:["Реципрокная регуляция.","Ретроингибирование.","Регуляция по механизму отрицательной обратной связи.","Регуляция по механизму положительной обратной связи."],correct:[0]},
+                    {id:"13.50",q:"Какой нуклеотид регулирует активность гликогенсинтетазы и фосфорилазы а?",opts:["АТФ.","АДФ.","АМФ.","цАМФ."],correct:[3]},
+                    {id:"13.51",q:"Какой фермент активирутся глюкагоном?",opts:["Гликогенфосфорилаза мышц.","Гликогенфосфорилаза печени.","Гликогенсинтаза.","Фосфоглюкоизомераза."],correct:[1]},
+                    {id:"13.52",q:"Какое биохимическое изменение характерно для болезни фон Гирке (гликогеноз I типа...)?",opts:["Поддержание стабильно высокого уровня глюкозы...","Гиполипидемия...","Неспособность к преобразованию глюкозы в гликоген.","Повышенное образование лактата."],correct:[3]},
+                    {id:"13.53",q:"Какое биохимическое изменение характерно для болезни Андерсена (гликогеноз IV типа...)?",opts:["Неспособность поддерживать уровень глюкозы... (гипогликемия).","Гиперинсулинемия...","Неспособность к преобразованию глюкозы в гликоген.","Образование длинных аномальных неветвящихся цепей гликогена."],correct:[3]},
+                    {id:"13.54",q:"Какое биохимическое изменение характерно для болезни Таруи (гликогеноз VII типа...)?",opts:["Неспособность поддерживать уровень глюкозы... (гипогликемия).","Образование длинных аномальных неветвящихся цепей гликогена.","Неспособность к преобразованию глюкозы в гликоген.","Усиленное использование глюкозы для синтеза гликогена и его накопление."],correct:[3]},
+                    {id:"13.55",q:"Для лечения какого типа гликогеноза может использоваться алглюкозидаза альфа...?",opts:["Болезнь Помпе (гликогеноз II типа).","Болезнь Херса (гликогеноз VI типа).","Болезнь Таруи (гликогеноз VII типа).","Болезнь фон Гирке (гликогеноз I типа)."],correct:[0]},
+                    {id:"13.56",q:"Какой из ферментов расщепления гликогена локализуется в лизосомах?",opts:["а-(1,4)-Глюкозидаза.","а-(1,6)-Глюкозидаза.","а-(1,4)-а-(1,4)-Глюкантрансфераза.","Глюкозо-6-фосфатаза."],correct:[0]},
+                    {id:"13.57",q:"К чему приведёт повышение активности ФДЭ в клетках мышц?",opts:["К усилению синтеза гликогена.","К угнетению синтеза гликогена.","К образованию патологических форм гликогена.","Синтез гликогена не зависит от активности ФДЭ."],correct:[0]},
+                    {id:"13.58",q:"Какой фактор стимулирует распад гликогена в печени?",opts:["Повышение концентрации внутриклеточного цАМФ.","Повышение концентрации инсулина.","Повышение концентрации внутриклеточного АТФ.","Повышение активности фосфатазы фосфорилазы а."],correct:[0]},
+                    {id:"13.59",q:"Какой фактор стимулирует синтез гликогена в печени?",opts:["Повышение внутриклеточной концентрации глюкозо-6-фосфата.","Повышение концентрации адреналина.","Повышение внутриклеточного уровня Ca2+.","Повышение активности киназы гликогенсинтазы."],correct:[0]},
+                    {id:"13.60",q:"Дефект какого фермента может быть причиной агликогеноза?",opts:["Глюкозо-6-фосфатазы в мышцах.","Глюкозо-6-фосфатазы в печени.","Гликогенсинтазы в печени.","Гликогенфосфорилазы в печени."],correct:[2]},
+                    {id:"13.61",q:"Укажите характерные биохимические признаки агликогеноза.",opts:["Значительная гипогликемия натощак и лактатацидоз.","Значительная гипергликемия натощак и лактатацидоз.","Значительная гипогликемия и снижение уровня лактата натощак.","Значительная гипергликемия и снижение уровня лактата натощак."],correct:[0]}
+                ]
+            },
+            s14: {
+                name: "Глюконеогенез и цикл Кори",
+                questions: [
+                    {id:"14.1",q:"Что такое глюконеогенез?",opts:["Синтез гликогена из глюкозы.","Распад гликогена до глюкозы.","Превращение глюкозы в лактат.","Синтез глюкозы из неуглеводных предшественников."],correct:[3]},
+                    {id:"14.2",q:"Как называется процесс, при котором происходит синтез глюкозы из неуглеводных компонентов?",opts:["Аэробным гликолизом.","Глюконеогенезом.","Гликогенолизом.","Анаэробным гликолизом."],correct:[1]},
+                    {id:"14.3",q:"Что такое глюконеогенез?",opts:["Синтез гликогена.","Синтез глюкозы из неуглеводных предшественников.","Распад гликогена.","Анаэробное окисление глюкозы."],correct:[1]},
+                    {id:"14.4",q:"В результате какого процесса происходит синтез глюкозы из глицерола, лактата и гликогенных аминокислот?",opts:["Гликолиза.","Гликогеногенеза.","Пентозофосфатного пути окисления глюкозы.","Глюконеогенеза."],correct:[3]},
+                    {id:"14.5",q:"В каком органе преимущественно протекает глюконеогенез?",opts:["В мышечной ткани.","В печени.","В головном мозге.","В корковом веществе надпочечников."],correct:[1]},
+                    {id:"14.6",q:"В каком органе преимущественно протекает глюконеогенез?",opts:["В печени.","В сердечной мышце.","В эритроцитах.","В жировой ткани."],correct:[0]},
+                    {id:"14.7",q:"Выберите верное утверждение.",opts:["Глюконеогенез происходит в цитоплазме.","Глюконеогенез происходит в митохондрии.","Глюконеогенез происходит частично в митохондрии, частично в цитоплазме.","Глюконеогенез происходит в межклеточном пространстве."],correct:[2]},
+                    {id:"14.8",q:"Процесс глюконеогенеза протекает в печени и почках. Благодаря наличию в клетках какого фермента это возможно?",opts:["Гексокиназа.","Глюкозо-6-фосфатаза.","Альдолаза.","Енолаза."],correct:[1]},
+                    {id:"14.9",q:"Укажите фермент, катализирующий реакцию превращения пирувата в лактат.",opts:["Пируватдегидрогеназа.","Лактатдегидрогеназа.","Пируваткарбоксилаза.","Лактаза."],correct:[1]},
+                    {id:"14.10",q:"Укажите фермент, катализирующий реакцию превращения лактата в пируват.",opts:["Пируватдегидрогеназа.","Лактатдегидрогеназа.","Пируваткарбоксилаза.","Лактаза."],correct:[1]},
+                    {id:"14.11",q:"Какой фермент катализирует реакцию превращения пирувата в оксалоацетат?",opts:["Фосфоенолпируваткарбоксикиназа.","Пируваткарбоксилаза.","Пируватдегидрогеназа.","Лактатдегидрогеназа."],correct:[1]},
+                    {id:"14.12",q:"В какое соединение может превратиться в печени пируват в одну стадию?",opts:["Фосфоенолпируват.","Оксалоацетат.","Глюкозу.","Цитрат."],correct:[1]},
+                    {id:"14.13",q:"Каким образом оксалоацетат транспортируется из митохондрий в цитоплазму...?",opts:["При помощи специфического переносчика.","В виде цитрата.","Через промежуточное образование малата.","Свободно выходит из митохондрии."],correct:[2]},
+                    {id:"14.14",q:"Какой фермент катализирует реакцию превращения оксалоацетата в фосфоенолпируват?",opts:["Фосфоенолпируваткарбоксикиназа.","Пируваткарбоксилаза.","Пируватдегидрогеназа.","Лактатдегидрогеназа."],correct:[0]},
+                    {id:"14.15",q:"Какая реакция сопровождается гидролизом ГТФ?",opts:["Пируват -> оксалоацетат.","Пируват -> лактат.","Оксалоацетат -> малат.","Оксалоацетат -> фосфоенолпируват."],correct:[3]},
+                    {id:"14.16",q:"...Какой фермент катализирует обратную реакцию глюконеогенеза?",opts:["Глюкозо-6-фосфатаза.","Глюкокиназа.","Фруктозо-1,6-бисфосфатаза.","Фосфофруктокиназа-1."],correct:[0]},
+                    {id:"14.17",q:"Какое соединение не может синтезироваться непосредственно из глюкозо-6-фосфата?",opts:["Глюкоза.","Фруктозо-6-фосфат.","Глюконолактон-6-фосфат.","Пируват."],correct:[3]},
+                    {id:"14.18",q:"Укажите фермент необратимой реакции глюконеогенеза.",opts:["Глюкозо-6-фосфатаза.","Альдолаза.","Триозофосфатизомераза.","Енолаза."],correct:[0]},
+                    {id:"14.19",q:"Какой фермент участвует в обходной реакции глюконеогенеза?",opts:["Глюкозо-6-фосфатаза.","Фосфоглюкомутаза.","Альдолаза.","Фосфофруктокиназа-1."],correct:[0]},
+                    {id:"14.20",q:"...Какой фермент катализирует обратную реакцию глюконеогенеза?",opts:["Глюкозо-6-фосфатаза.","Глюкофосфомутаза.","Фруктозо-1,6-бисфосфатаза.","Фосфофруктокиназа-1."],correct:[2]},
+                    {id:"14.21",q:"Какой продукт образуется под действием фруктозо-1,6-бисфосфатазы?",opts:["Фруктозо-1,6-бисфосфат.","Фруктозо-6-фосфат.","Глицеральдегид-3-фосфат.","Глюкозо-6-фосфат."],correct:[1]},
+                    {id:"14.22",q:"Какой продукт образуется под действием глюкозо-6-фосфатазы?",opts:["Глюкоза.","Фруктозо-6-фосфат.","Глюкозо-1-фосфат.","Глюкозо-6-фосфат."],correct:[0]},
+                    {id:"14.23",q:"Какой фермент катализирует реакцию, лимитирующую скорость глюконеогенеза?",opts:["Гексокиназа.","Пируваткарбоксилаза.","Фосфофруктокиназа-1.","Альдолаза."],correct:[1]},
+                    {id:"14.24",q:"Укажите фермент глюконеогенеза.",opts:["Сукцинатдегидрогеназа.","Пируваткарбоксилаза.","Пируватдегидрогеназа.","Лактатдегидрогеназа."],correct:[1]},
+                    {id:"14.25",q:"Какой фермент не участвует в глюконеогенезе?",opts:["Гексокиназа.","Енолаза.","Пируваткарбоксилаза.","Альдолаза."],correct:[0]},
+                    {id:"14.26",q:"Какой фермент характерен только для глюконеогенеза?",opts:["Гексокиназа.","Фосфофруктокиназа-1.","Фруктозо-1,6-бисфосфатаза.","Фосфорилаза."],correct:[2]},
+                    {id:"14.27",q:"Какой фермент является общим для гликолиза и глюконеогенеза?",opts:["Гексокиназа.","Альдолаза.","Пируваткиназа.","Фруктозо-1,6-бисфосфатаза."],correct:[1]},
+                    {id:"14.28",q:"Укажите фермент, катализирующий необратимую реакцию глюконеогенеза.",opts:["Фосфоглицераткиназа.","Альдолаза.","Енолаза.","Глюкозо-6-фосфатаза."],correct:[3]},
+                    {id:"14.29",q:"Какое соединение является аллостерическим активатором пируваткарбоксилазы?",opts:["Фруктозо-2,6-бифосфат.","Глюкозо-6-фосфат.","УТФ.","Ацетил-SКоА."],correct:[3]},
+                    {id:"14.30",q:"Укажите активатор пируваткарбоксилазы.",opts:["АМФ.","Фруктозо-2.6-бисфосфат.","Цитрат.","Ацетил-SКоА."],correct:[3]},
+                    {id:"14.31",q:"Укажите аллостерические активаторы пируваткарбоксилазы глюконеогенеза.",opts:["АТФ и ацетил-SКоА.","цАМФ и цГМФ.","Глюкозо-6-фосфат и глюкозо-1-фосфат.","Инсулин и глюкагон."],correct:[0]},
+                    {id:"14.32",q:"Укажите митохондриальный фермент, участвующий в глюконеогенезе.",opts:["Енолаза.","Фосфоглицераткиназа.","Альдолаза.","Пируваткарбоксилаза."],correct:[3]},
+                    {id:"14.33",q:"Какой фермент глюконеогенеза находится в митохондриях?",opts:["Лактатдегидрогеназа.","Пируваткарбоксилаза.","Сукцинатдегидрогеназа.","Глюкозо-6-фосфатаза."],correct:[1]},
+                    {id:"14.34",q:"Укажите витамин, необходимый для функционирования пируваткарбоксилазы.",opts:["Биотин.","Пиридоксин.","Тиамин.","Ретинол."],correct:[0]},
+                    {id:"14.35",q:"Какой фермент является общим для гликолиза и глюконеогенеза?",opts:["Гексокиназа.","Альдолаза.","Пируваткиназа.","Фруктозо-1,6-бисфосфатаза."],correct:[1]},
+                    {id:"14.36",q:"Какой метаболит является общим для глюконеогенеза и гликолиза?",opts:["Оксалоацетат.","Малат.","Фумарат.","Фосфоенолпируват."],correct:[3]},
+                    {id:"14.37",q:"После 100-метрового забега в крови повышается уровень лактата. Каким образом...?",opts:["Глюконеогенезом в мышцах.","Глюконеогенезом в печени.","Образованием цитрата.","Образованием этанола."],correct:[1]},
+                    {id:"14.38",q:"Как называется механизм транспорта... лактата из мышц в печень с последующим синтезом... глюкозы?",opts:["Глицеролфосфатный челночный механизм.","Цикл Кори.","Малат-аспартатный челночный механизм.","Глюкозоаланиновый цикл."],correct:[1]},
+                    {id:"14.39",q:"Выберите верное утверждение.",opts:["Цикл Кори... печень и нервную ткань.","Цикл Кори... печень и почки.","Цикл Кори... печень и мышцы.","Цикл Кори... печень и костную ткань."],correct:[2]},
+                    {id:"14.40",q:"Какое соединение попадает из мышечной ткани в печень в цикле Кори?",opts:["Лактат.","Аланин.","Ацетон.","Глицерол."],correct:[0]},
+                    {id:"14.41",q:"Выберите верное утверждение.",opts:["Цикл Кори позволяет утилизировать лактат... эритроцитами...","Цикл Кори позволяет утилизировать аланин... печенью...","Цикл Кори позволяет утилизировать лактат... печенью для синтеза глюкозы.","Цикл Кори позволяет утилизировать ацетон... мышечной тканью..."],correct:[2]},
+                    {id:"14.42",q:"Усиление какого процесса в мышечной ткани активирует цикл Кори?",opts:["Синтеза гликогена.","Окислительного декарбоксилирования пирувата.","Анаэробного гликолиза.","Глюконеогенеза."],correct:[2]},
+                    {id:"14.43",q:"Каков энергетический эффект цикла Кори?",opts:["В печени... 6 молекул АТФ, в мышце... 2 молекулы АТФ.","В печени... 6 молекул АТФ, в мышце... 30 молекул АТФ.","В печени... 10 молекул АТФ, в мышце... 6 молекул АТФ.","В печени... 10 молекул АТФ, в мышце... 8 молекул АТФ."],correct:[0]},
+                    {id:"14.44",q:"Выберите верное утверждение.",opts:["Реакции цикла Кори позволяют убирать из мышечной ткани излишки глюкозы...","Реакции цикла Кори позволяют убирать из мышечной ткани излишки лактата...","Реакции цикла Кори позволяют убирать из печени излишки лактата...","Реакции цикла Кори позволяют убирать из печени излишки аланина..."],correct:[1]},
+                    {id:"14.45",q:"Из какого соединения может образовываться глюкоза в мышечной ткани?",opts:["Из глицерола.","Из лактата.","Из лейцина.","Не может образовываться."],correct:[3]}
+                ]
+            }
+        };
+
+        // --- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ---
+        let activeQuestions = [];
+        let currentIndex = 0;
+        let userAnswers = {}; // { "902": { selected: Set, isSubmitted: bool, isCorrect: bool }, ... }
+        let currentMode = 'default';
+        const storageKey = 'biochem_quiz_progress_v1';
+
+        // --- DOM ЭЛЕМЕНТЫ ---
+        const screens = {
+            start: document.getElementById('start-screen'),
+            quiz: document.getElementById('quiz-screen'),
+            result: document.getElementById('result-screen')
+        };
+        const resumeBtn = document.getElementById('resume-block');
+        const quizFooter = document.getElementById('quiz-footer');
+        const cardContainer = document.getElementById('question-card');
+        const qIdEl = document.getElementById('q-id-display');
+        const qTextEl = document.getElementById('q-text');
+        const optionsList = document.getElementById('options-list');
+        const mainBtn = document.getElementById('main-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const themeToggleBtns = document.querySelectorAll('.theme-toggle');
+        const mistakesBtn = document.getElementById('mistakes-btn-end');
+        const mistakesBtnStart = document.getElementById('mistakes-btn-start');
+        const progressPill = document.getElementById('progress-pill');
+        const topicListEl = document.getElementById('topic-list');
+
+        // --- ИНИЦИАЛИЗАЦИЯ ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTheme();
+            populateTopics();
+            if (localStorage.getItem(storageKey)) {
+                resumeBtn.style.display = 'block';
+                // Проверяем, есть ли ошибки в сохраненке
+                const savedData = JSON.parse(localStorage.getItem(storageKey));
+                const mistakeIDs = Object.keys(savedData.answers).filter(id => !savedData.answers[id].isCorrect);
+                if (mistakeIDs.length > 0) {
+                    mistakesBtnStart.style.display = 'flex';
+                }
+            }
+            themeToggleBtns.forEach(btn => btn.onclick = toggleTheme);
+        });
+        
+        function populateTopics() {
+            for (const key in topicData) {
+                const topic = topicData[key];
+                const label = document.createElement('label');
+                label.className = 'topic-choice';
+                label.innerHTML = `
+                    <input type="checkbox" class="topic-checkbox" data-topic-key="${key}" checked>
+                    ${topic.name}
+                    <span>(${topic.questions.length} вопр.)</span>
+                `;
+                topicListEl.appendChild(label);
+            }
+        }
+        
+        function toggleSelectAll(button) {
+            const checkboxes = document.querySelectorAll('.topic-checkbox');
+            // Проверяем, выбраны ли все. Если да, то снимаем, иначе - выбираем
+            const allSelected = Array.from(checkboxes).every(cb => cb.checked);
+            checkboxes.forEach(cb => cb.checked = !allSelected);
+            button.textContent = allSelected ? "Выбрать все" : "Снять выделение";
+        }
+
+        // --- ЛОГИКА ТЕМЫ ---
+        function toggleTheme() {
+            const currentTheme = document.body.getAttribute('data-theme');
+            const newTheme = (currentTheme === 'dark') ? 'light' : 'dark';
+            if (newTheme === 'light') {
+                document.body.removeAttribute('data-theme');
+            } else {
+                document.body.setAttribute('data-theme', newTheme);
+            }
+            localStorage.setItem('gi_theme', newTheme);
+            themeToggleBtns.forEach(btn => {
+                const icon = btn.querySelector('i');
+                if (icon.classList.contains('fa-moon') || icon.classList.contains('fa-sun')) {
+                    icon.className = 'fas ' + (newTheme === 'dark' ? 'fa-sun' : 'fa-moon');
+                }
+            });
+        }
+
+        function loadTheme() {
+            const theme = localStorage.getItem('gi_theme') || 'light'; // PRO по умолчанию светлый
+            if (theme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                themeToggleBtns.forEach(btn => {
+                    const icon = btn.querySelector('i');
+                    if (icon.classList.contains('fa-moon')) icon.className = 'fas fa-sun';
+                });
+            } else {
+                document.body.removeAttribute('data-theme');
+                 themeToggleBtns.forEach(btn => {
+                    const icon = btn.querySelector('i');
+                    if (icon.classList.contains('fa-sun')) icon.className = 'fas fa-moon';
+                });
+            }
+        }
+
+        // --- ЛОГИКА СТАРТА ТЕСТА ---
+        function startQuiz(mode) {
+            currentMode = mode;
+            
+            if (mode === 'resume') {
+                if (!loadProgress()) {
+                    alert("Сохраненные данные не найдены. Начинаем заново.");
+                    startQuiz('new');
+                    return;
+                }
+            } else {
+                // Собираем выбранные темы
+                const selectedKeys = Array.from(document.querySelectorAll('.topic-checkbox:checked')).map(cb => cb.dataset.topicKey);
+                
+                if (selectedKeys.length === 0 && mode !== 'mistakes') {
+                    alert("Выберите хотя бы одну тему!");
+                    return;
+                }
+                
+                activeQuestions = [];
+                userAnswers = {};
+                currentIndex = 0;
+
+                if (mode === 'mistakes') {
+                    const savedData = JSON.parse(localStorage.getItem(storageKey));
+                    let allMistakeIDs = [];
+                    if (savedData && savedData.answers) {
+                         // Восстанавливаем Set'ы, чтобы проверить
+                         const savedAnswers = savedData.answers;
+                         for (const id in savedAnswers) {
+                             if (savedAnswers[id] && !savedAnswers[id].isCorrect) {
+                                 allMistakeIDs.push(id);
+                             }
+                         }
+                    }
+
+                    if (allMistakeIDs.length === 0) {
+                         alert("Нет сохраненных ошибок для работы!");
+                         return;
+                    }
+                    // Фильтруем ошибки по *всем* темам, а не только по выбранным
+                    activeQuestions = fullQuizData.filter(q => allMistakeIDs.includes(q.id.toString()));
+                } else { // 'new' or 'shuffle'
+                    selectedKeys.forEach(key => {
+                        activeQuestions = activeQuestions.concat(JSON.parse(JSON.stringify(topicData[key].questions)));
+                    });
+                    
+                    if (activeQuestions.length === 0) {
+                         alert("В выбранных темах нет вопросов.");
+                         return;
+                    }
+
+                    if (mode === 'shuffle') {
+                        shuffleArray(activeQuestions);
+                        activeQuestions.forEach(q => {
+                            const correctOriginalTexts = q.correct.map(idx => q.opts[idx]);
+                            shuffleArray(q.opts);
+                            q.correct = correctOriginalTexts.map(text => q.opts.findIndex(opt => opt === text));
+                        });
+                    }
+                    localStorage.removeItem(storageKey);
+                }
+            }
+
+            switchScreen('quiz');
+            renderQuestion(true);
+        }
+        
+        // --- ЛОГИКА РЕНДЕРА ВОПРОСА ---
+        function renderQuestion(isFirstLoad = false, direction = 'right') {
+            const q = activeQuestions[currentIndex];
+            if (!q) return;
+
+            if (!userAnswers[q.id]) {
+                userAnswers[q.id] = { selected: new Set(), isSubmitted: false, isCorrect: false };
+            }
+            const state = userAnswers[q.id];
+
+            progressPill.textContent = `${currentIndex + 1} / ${activeQuestions.length}`;
+            qIdEl.textContent = `Вопрос ${q.id}`;
+            qTextEl.textContent = q.q;
+
+            cardContainer.style.animation = 'none';
+            if (!isFirstLoad) {
+                void cardContainer.offsetWidth; // Force reflow
+                cardContainer.style.animation = `fadeIn 0.3s ease-out`;
+            }
+
+            optionsList.innerHTML = '';
+            q.opts.forEach((optText, idx) => {
+                const div = document.createElement('div');
+                div.className = 'option';
+                div.innerHTML = `<div class="option-marker"><i class="fas"></i></div><div class="option-text">${optText}</div>`;
+                const markerIcon = div.querySelector('.option-marker i');
+
+                if (state.isSubmitted) {
+                    div.classList.add('disabled');
+                    if (q.correct.includes(idx)) {
+                        div.classList.add('correct');
+                        markerIcon.classList.add('fa-check');
+                    }
+                    else if (state.selected.has(idx)) {
+                        div.classList.add('incorrect');
+                        markerIcon.classList.add('fa-times');
+                    }
+                    if (q.correct.includes(idx) && !state.selected.has(idx)) {
+                        div.classList.add('missed');
+                    }
+                } else {
+                    if (state.selected.has(idx)) {
+                        div.classList.add('selected');
+                        markerIcon.classList.add('fa-check');
+                    }
+                    div.onclick = () => toggleOption(q.id, idx);
+                }
+                optionsList.appendChild(div);
+            });
+            
+            updateFooter(state);
+        }
+
+        function toggleOption(qId, idx) {
+            const state = userAnswers[qId];
+            if (state.isSubmitted) return;
+            if (state.selected.has(idx)) state.selected.delete(idx);
+            else state.selected.add(idx);
+            
+            const options = document.querySelectorAll('.option');
+            options.forEach((opt, i) => { 
+                if (i === idx) {
+                    opt.classList.toggle('selected');
+                    opt.querySelector('.option-marker i').classList.toggle('fa-check', state.selected.has(idx));
+                }
+            });
+            updateFooter(state);
+        }
+
+        // --- ЛОГИКА ФУТЕРА/КНОПОК ---
+        function updateFooter(state) {
+            prevBtn.disabled = (currentIndex === 0);
+            nextBtn.disabled = (currentIndex === activeQuestions.length - 1);
+            
+            if (state.isSubmitted) {
+                mainBtn.textContent = "Далее";
+                mainBtn.disabled = false;
+                mainBtn.className = 'action-btn';
+                if(state.isCorrect) mainBtn.classList.add('correct');
+                else mainBtn.classList.add('incorrect');
+                
+                if (currentIndex === activeQuestions.length - 1) {
+                    mainBtn.textContent = "Завершить";
+                }
+            } else {
+                mainBtn.textContent = "Ответить";
+                mainBtn.disabled = (state.selected.size === 0);
+                mainBtn.className = 'action-btn';
+            }
+        }
+        
+        function handleMainClick() {
+            const state = userAnswers[activeQuestions[currentIndex].id];
+            if (state.isSubmitted) {
+                if (currentIndex < activeQuestions.length - 1) {
+                    nextQ();
+                } else {
+                    finishQuiz();
+                }
+            } else {
+                checkAnswer();
+            }
+        }
+
+        function checkAnswer() {
+            const q = activeQuestions[currentIndex];
+            const state = userAnswers[q.id];
+            if (state.isSubmitted) return;
+            state.isSubmitted = true;
+            
+            const userArr = Array.from(state.selected).sort();
+            const correctArr = [...q.correct].sort();
+            state.isCorrect = JSON.stringify(userArr) === JSON.stringify(correctArr);
+            
+            saveProgress();
+            renderQuestion(false);
+        }
+
+        function nextQ() {
+            if (currentIndex < activeQuestions.length - 1) {
+                currentIndex++;
+                renderQuestion(false, 'right');
+            }
+        }
+        function prevQ() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                renderQuestion(false, 'left');
+            }
+        }
+
+        // --- РЕЗУЛЬТАТЫ И СОХРАНЕНИЕ ---
+        function finishQuiz() {
+            let correctCount = 0;
+            activeQuestions.forEach(q => {
+                if(userAnswers[q.id] && userAnswers[q.id].isCorrect) { correctCount++; }
+            });
+
+            const total = activeQuestions.length;
+            const percent = Math.round((correctCount / total) * 100);
+
+            document.getElementById('final-score').textContent = `${percent}%`;
+            document.getElementById('correct-val').textContent = correctCount;
+            document.getElementById('error-val').textContent = total - correctCount;
+
+            const title = document.getElementById('result-title');
+            if (percent === 100) title.textContent = "Идеально!";
+            else if (percent >= 80) title.textContent = "Отлично!";
+            else if (percent >= 50) title.textContent = "Неплохо!";
+            else title.textContent = "Стоит повторить";
+
+            // Показываем кнопку, если есть хоть одна ошибка
+            if (correctCount < total) {
+                mistakesBtn.style.display = 'flex';
+            } else {
+                mistakesBtn.style.display = 'none';
+            }
+            switchScreen('result');
+            
+            if (currentMode !== 'mistakes') {
+                // Не удаляем, а обновляем, чтобы "Работа над ошибками" видела все ошибки
+                saveProgress(); 
+            }
+        }
+
+        function saveProgress() {
+            // Сохраняем только те, на которые ответили
+            const serializableAnswers = {};
+            for (const id in userAnswers) {
+                if (userAnswers[id].isSubmitted) {
+                    serializableAnswers[id] = { ...userAnswers[id], selected: Array.from(userAnswers[id].selected) };
+                }
+            }
+            
+            // Если в режиме "возобновления", надо смержить старые и новые ответы
+            let answersToSave = serializableAnswers;
+            if (currentMode === 'resume' || currentMode === 'mistakes') {
+                 const saved = JSON.parse(localStorage.getItem(storageKey));
+                 if (saved && saved.answers) {
+                    // Восстанавливаем Set'ы из сохраненных
+                    const oldAnswers = saved.answers;
+                     for (const id in oldAnswers) {
+                         if (oldAnswers[id]) { oldAnswers[id].selected = new Set(oldAnswers[id].selected); }
+                     }
+                    answersToSave = {...oldAnswers, ...serializableAnswers};
+                 }
+            }
+            
+            // Снова конвертируем в массив для JSON
+            const finalAnswers = {};
+             for (const id in answersToSave) {
+                finalAnswers[id] = { ...answersToSave[id], selected: Array.from(answersToSave[id].selected) };
+            }
+
+            const progress = {
+                currentMode: currentMode,
+                currentIndex: currentIndex,
+                rawQuestions: activeQuestions, 
+                answers: finalAnswers
+            };
+            localStorage.setItem(storageKey, JSON.stringify(progress));
+        }
+
+        function loadProgress() {
+            const savedData = JSON.parse(localStorage.getItem(storageKey));
+            if (!savedData) return false;
+            
+            currentMode = savedData.currentMode;
+            currentIndex = savedData.currentIndex;
+            activeQuestions = savedData.rawQuestions; 
+            userAnswers = savedData.answers;
+            for (const id in userAnswers) {
+                if (userAnswers[id]) { userAnswers[id].selected = new Set(userAnswers[id].selected); }
+            }
+            return true;
+        }
+        
+        function switchScreen(screenName) {
+            Object.values(screens).forEach(s => s.classList.remove('active'));
+            screens[screenName].classList.add('active');
+            quizFooter.style.display = (screenName === 'quiz') ? 'block' : 'none';
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+        
+        document.addEventListener('keydown', (e) => {
+            if (screens.quiz.classList.contains('active')) {
+                if (e.key === 'ArrowRight') nextBtn.click();
+                if (e.key === 'ArrowLeft') prevBtn.click();
+                if (e.key === 'Enter') mainBtn.click();
+            }
+        });
+        
+    </script>
+</body>
+</html>
